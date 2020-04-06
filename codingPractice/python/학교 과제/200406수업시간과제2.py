@@ -1,23 +1,28 @@
 i = int(input("숫자1? "))
 j = int(input("숫자2? "))
-cnt=0
 
-a1 = int(input(i ,"+", j))
-if a1 == i+j:
-    cnt = cnt+1
-else:
-    pass
-a2 = int(input(i ,"-" ,j))
-if a1 == i-j:
-    cnt = cnt+1
-else:
-    pass
-a3 = int(input(i ,"*" ,j))
-if a1 == i*j:
-    cnt = cnt+1
-else:
-    pass
+print(i, "+", num2, "=", end="")
+a1 =int(input("?"))
 
-print("단신의 점수는", 100/cnt)
+print(i, "-", num2, "=", end="")
+a2 =int(input("?"))
+
+print(i, "*", num2, "=", end="")
+a3 =int(input("?"))
+
+
+r1 = a1+a2
+r2 = a1-a2
+r3 = a1*a2
+
+avg =0
+if r1 == a1:
+    avg=avg+1
+if r2 == a2:
+    avg=avg+1
+if r3 == a3:
+    avg=avg+1
+    
+print("당신의 점수는", avg/3, "입니다")
 
 
