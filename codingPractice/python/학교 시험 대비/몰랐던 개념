@@ -1,0 +1,106 @@
+대문자로 쓰면 상수
+이건 변하지 않는다
+TAX_RATE = 0.35
+
+수식(expression)=피연산자들과 연산자의 조합
+연산자(operator)는 연산을 나타내는 기호
+피연산자(operand)는 연산의 대상이 되는 것
+
+i = 피연산자 * 연산자
+
+// 로 나누면 진짜 몫만 나옴
+/ 로 나누면 소숫점까지 나옴
+** 하면 지수 2^8 = 256
+
+산술 연산자
+관계 연산자
+논리 연산자
+비트 연산자
+할당 연산자: +=, -=, *=, /=, //=, %=
+
+import math
+abs() #절대값을 구하는 함수
+round() #반올림을 하는 함수
+max() #최대값을 구하는 함수
+min() #최소값을 구하는 함수
+sqrt() # 루트
+
+message= 'doesn\'t'  # \를 사용하여 작은따옴표를 출력한다.
+print(message)
+doesn't
+
+----
+>>> "Student"+26
+...
+TypeError: Can't convert 'int' object to str implicitly
+
+>>> "Student"+str(26)
+'Student26'
+
+>>> price = int("259000")
+>>> height = float("290.54");
+----
+
+line = "=" * 50
+print(line)
+이런거 가능
+
+
+변수내용을 " " 안에 넣어서 출력
+" %d" %변수명  #정수
+" %s" %변수명  #문자열
+" %f" %변수명  #실수
+변수 여러 개 사용: " %s %d %f " %(변수1,변수2,변수2)  
+
+time = "12:00pm"
+m = "현재 시간은 %s입니다. " %time
+n = "현재 시간은 %s입니다. " % " 정오 "
+o = "현재 시간은 %d시 입니다 " %12
+print(m,n,o)
+h=12
+print(현재 시간은 %d:%d:%d 입니다”%(h,50,12))
+
+hi="Nice to meet you"
+for x in range(len(hi)): # len() 문자열, 리스트의 길이를 구하는 함수
+    print(word[x],end="*")
+
+N*i*c*e* *t*o* *m*e*e*t* *y*o*u*
+
+슬라이싱
+str="Hello World"
+print(str[0:11],str[2:7])
+print(str[:8],str[8:])
+>>Hello World llo W
+>>Hello Wo rld
+
+문자열 인덱싱
+me="I am a good student"
+if "good" in me: # in의 사용법
+    print("%s에는 %s이 있습니다"%(me,"good"))
+else:
+    print("%s가 없네요"%"good")
+I am a good student에는 good이 있습니다
+in 포함관계 정의, 결과로는 True, False가 나옴
+
+
+
+range() 함수는 start부터 stop-1까지 step의 간격으로 정수들을 생성한다. start와 step이 대괄호로 싸여져 있는데 이는 생략할 수 있다는 의미이다. start나 step이 생략되면 start는 0, step은 1로 간주된다. 
+
+함수의 의의
+프로그램 안에서 중복된 코드를 제거한다. 
+복잡한 프로그래밍 작업을 더 간단한 작업들로 분해할 수 있다
+함수는 한번 만들어지면 다른 프로그램에서도 재사용될 수 있다.
+함수를 사용하면 가독성이 증대되고, 유지 관리도 쉬워진다.
+
+
+
+시퀀스 자료형
+
+시퀀스: 순서를 가진 요소들의 집합
+문자열 
+바이트 시퀀스
+바이트 배열
+리스트
+튜플
+range 객체 
+

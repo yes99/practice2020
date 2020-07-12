@@ -14,7 +14,7 @@ class Smartphone:
         return self.model
 
 
-class iPhone(Smartphone)
+class iPhone(Smartphone):
     def __init__(self):
         self.os = 'iOS'
         self.version = 'iOS9'
@@ -23,8 +23,33 @@ class iPhone(Smartphone)
     def getOS(self):
         return "OS:" + self.os
 
+class iPhone():
+    def __init__(self):
+        self.os = 'iOS'
+        self.version = 'iOS9'
+        self.model = 'iPhone6(s)'
 
-phone = iPhone()
+    def getOS(self):
+        return "OS:" + self.os
 
-print(phone.getOS())
+     def getVersion(self):
+        return self.version
 
+    def getModel(self):
+        return self.model
+
+
+
+
+
+
+
+
+
+phone1 = iPhone()
+
+print(phone1.getOS())
+
+phone2 = Smartphone()
+
+print(phone2.getOS())

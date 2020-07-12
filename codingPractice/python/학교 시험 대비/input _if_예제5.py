@@ -1,7 +1,6 @@
 i = int(input("숫자1? "))
 j = int(input("숫자2? "))
 
-
 print(i, "+", j, "=", end="")
 answer =int(input("?"))
 

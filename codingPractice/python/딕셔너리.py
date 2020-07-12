@@ -14,5 +14,6 @@ print(sports.values())
 if '양궁' in sports:
     print(sports['양궁'])
 
-sports.clear()
+sports.pop("양궁")
 print(sports)
+
