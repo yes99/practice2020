@@ -6,38 +6,33 @@ using namespace std;
 // oo <<
 int main()
 {
-	int hz, run, time;
+	string standard;
 	int num;
-	int enemy, enemytime;
+	string sentence;
 	//ifstream ii("C:\\이현석\\input.txt");
 	ifstream ii("input.txt");
 
 	//ofstream oo("C:\\이현석\\output.txt");
 	ofstream oo("output.txt");
-	ii >> hz >> run >> time;
+	ii >> standard;
+	ii.ignore();
 	ii >> num;
-	int answer = 0;
+	ii.ignore();
+	string temp;
 	int cnt = 0;
-	int i;
-	for ( i = 0; i < num; i++)
+	for (int i = 0; i < num; i++)
 	{
-		ii >> enemy >> enemytime;
-		if (enemy % hz == 0 && enemytime >= run)
+		getline(ii, sentence);
+		for (int j = 0; j < sentence.length(); j++)
 		{
-			cnt++;
+			if (sentence.substr(j  ,  standard.length()) == standard)
+			{
+				cnt++;
+			}
 		}
-		answer = answer + enemytime;
-		if (cnt == time)
-		{
-			oo << answer;
-			break;
-		}
-	}
-	if (cnt != time)
-	{
-		oo << "0";
 	}
 
+	oo << cnt;
 
 
 	ii.close();

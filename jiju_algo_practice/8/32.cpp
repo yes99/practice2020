@@ -22,8 +22,8 @@ int main()
     {
         do
         {
-            y = dir * x + a;
             x = x + way;
+            y = dir * x + a;
         } while (x > 0 && x < right && y < up);
 
         if (dir > 0 || dir < 0)

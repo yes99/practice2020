@@ -11,7 +11,7 @@ int main()
 
 	//ofstream oo("C:\\ÀÌÇö¼®\\output.txt");
 	ofstream oo("output.txt");
-
+	oo << "D";
 	ii.close();
 	oo.close();
 	return 0;
