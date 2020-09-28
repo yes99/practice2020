@@ -60,10 +60,9 @@ in_image = cv2.imread('kei.png', 0)  # img2numpy
 cv2.imshow('Input Image', in_image)
 out_image = transform(in_image, 20)
 imple_image = transform2(in_image,20)
-#sample = transform(out_image,-20)
 
 cv2.imshow('Result Image', out_image)
 cv2.imshow('imple image', imple_image)
 
-cv2.imwrite('Kei.png', out_image)  # save result img
+cv2.imwrite('Kei_convert.png', imple_image)  # save result img
 cv2.waitKey()
