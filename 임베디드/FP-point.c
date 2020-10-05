@@ -1,3 +1,4 @@
+#define _CRT_SECURE_NO_WARNINGS 
 #include <stdio.h>
 
 int main()
@@ -11,7 +12,7 @@ int main()
     printf("Single Precision FP value:");
     scanf("%lf", &input);
     int origin;
-;// S만들기======================================
+    ;// S만들기======================================
     if (input >= 0)
     {
         number = input;
@@ -84,7 +85,7 @@ int main()
     i = 0;
     while (1)
     {
-        if (tempf * 2 >=1)
+        if (tempf * 2 >= 1)
         {
 
             tempB[i] = 1;
@@ -106,20 +107,20 @@ int main()
             break;
         }
     }
-   /* printf("tempB 임시저장 즉 소수점만:  ");
+    /* printf("tempB 임시저장 즉 소수점만:  ");
 
-    for (i = 0; i < cnt; i++)
-    {
-    printf("%d", tempB[i]);
-    }*/
+     for (i = 0; i < cnt; i++)
+     {
+     printf("%d", tempB[i]);
+     }*/
     printf("\n"); // 여기까지는 문제가 없는 듯 하다
-    for (i = key + 1; i < key + cnt+1; i++)
+    for (i = key + 1; i < key + cnt + 1; i++)
     {
-        binary[i] = tempB[i-1-key];
+        binary[i] = tempB[i - 1 - key];
     }
 
     printf("바이너리 출력:  ");
-    for (i=0; i < 23; i++)
+    for (i = 0; i < 23; i++)
     {
         if (binary[i] != 46)
         {
@@ -160,8 +161,8 @@ int main()
         binary[0] = binary[key2];
         for (i = 0; i < 23; i++)
         {
-            binary[i+2] = binary[key2 +1+ i];     
-           // printf("\%d", (binary[i]));
+            binary[i + 2] = binary[key2 + 1 + i];
+            // printf("\%d", (binary[i]));
         }
     }
     binary[1] = 88;
@@ -174,11 +175,11 @@ int main()
     {
         printf("S: 1");
     }
-   /* printf("일단 바이너리 ");
-    for (i = 0; i < 23; i++)
-    {
-        printf("\%d", (binary[i]));
-    }*/
+    /* printf("일단 바이너리 ");
+     for (i = 0; i < 23; i++)
+     {
+         printf("\%d", (binary[i]));
+     }*/
     printf("\n");
     printf("F: ");
     for (i = 2; i < 25; i++)
@@ -195,9 +196,9 @@ int main()
     }
     else
     {
-        Eready = (key2-1)*(-1);
+        Eready = (key2 - 1) * (-1);
     }
-    
+
     int E = Eready + 127;
     int Earray[8] = { 0, };
     int finalEarray[8];
@@ -224,7 +225,7 @@ int main()
     {
         finalEarray[i] = Earray[7 - i];
     }
-    printf("E : ");
+    printf("E: ");
     for (i = 0; i < 8; i++)
     {
         printf("%d", (finalEarray[i]));
@@ -251,10 +252,6 @@ int main()
         printf("%d", (binary[i]));
     }
     //완료
-
-
-
-
 
     return 0;
 }
