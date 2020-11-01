@@ -31,15 +31,10 @@ int main(int argc, char *argv[])
 
     fp2 = fopen("append_result.txt", "w");
     while ((c = fgetc(fp1)) != EOF)
-        if(c>96 && c <123)
-        {
-            fputc(c-32, fp2);
-        }
-        else
-        {
-            fputc(c, fp2);
-        }
-
+    {
+        fputc(c, fp2);
+    }
+        
     fclose(fp1);
     fclose(fp2);
 
