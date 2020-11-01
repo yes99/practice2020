@@ -148,7 +148,7 @@ int main(int argc, char *argv[])
     for( i = 0 ; i < 5 ; i++)
     {
         //Write GPIO value
-        value = i%2;
+        value = rand();
         printf("Writing %d in GPIO %d\n", value, POUT);
         if(-1 ==GPIOWrite(POUT, value))
         {
