@@ -15,6 +15,155 @@ struct music
     int like;
 };
 
+void bubbleint(int a[], int n)
+{
+    int flag, t, i, j;
+
+	for (i = 1; i <= n - 1; i++)
+	{
+		flag = 0;
+		for (j = 0; j < n - i; j++)
+		{
+			if (a[j] > a[j + 1])
+			{
+				t = a[j];
+				a[j] = a[j + 1];
+				a[j + 1] = t;
+				flag = 1;
+			}
+		}
+		if (flag == 0)
+		{
+			break;
+		}
+	}
+
+}
+
+void bubblestring(string a[], int n)
+{
+    int flag, i, j;
+    string t;
+	for (i = 1; i <= n - 1; i++)
+	{
+		flag = 0;
+		for (j = 0; j < n - i; j++)
+		{
+			if (a[j] > a[j + 1])
+			{
+				t = a[j];
+				a[j] = a[j + 1];
+				a[j + 1] = t;
+				flag = 1;
+			}
+		}
+		if (flag == 0)
+		{
+			break;
+		}
+	}
+}
+
+void heapint(int heap[], int number)
+{
+    int i, j, k;
+    int c, root;
+    int temp;
+    //힙구조로 바꾸자
+    for(i =1; i <number;i++)
+    {
+        c = i;
+        do
+        {
+            root = (c-1)/2;
+            if(heap[root]<heap[c])
+            {
+                temp = heap[root];
+                heap[root] = heap[c];
+                heap[c] = temp;
+            }
+            c = root;
+        } while (c!=0 );
+    }
+//크기를 줄여가며 반복적으로 힙 구성
+    for(i = number -1 ; i >=0;i--)
+    {
+        temp = heap[0];
+        heap[0] = heap[i];
+        heap[i]=temp;
+        int root =0;
+        int c = 1;
+        do
+        {
+            c = 2 * root +1;
+            //자식 중에 더 큰값 찾기
+            if(heap[c] < heap[c+1] && c < i-1)
+            {
+                c++;   
+            }
+            //루트보다 자식이 더 크다면 교환
+            if(heap[root] < heap[c] && c<i)
+            {
+                temp = heap[root];
+                heap[root] = heap[c];
+                heap[c]=temp;
+            }
+            root = c;
+        } while (c<i);
+        
+    }
+}
+
+void heapstring(string heap[], int number)
+{
+    int i, j, k;
+    int c, root;
+    string temp;
+    //힙구조로 바꾸자
+    for(i =1; i <number;i++)
+    {
+        c = i;
+        do
+        {
+            root = (c-1)/2;
+            if(heap[root]<heap[c])
+            {
+                temp = heap[root];
+                heap[root] = heap[c];
+                heap[c] = temp;
+            }
+            c = root;
+        } while (c!=0 );
+    }
+//크기를 줄여가며 반복적으로 힙 구성
+    for(i = number -1 ; i >=0;i--)
+    {
+        temp = heap[0];
+        heap[0] = heap[i];
+        heap[i]=temp;
+        int root =0;
+        int c = 1;
+        do
+        {
+            c = 2 * root +1;
+            //자식 중에 더 큰값 찾기
+            if(heap[c] < heap[c+1] && c < i-1)
+            {
+                c++;   
+            }
+            //루트보다 자식이 더 크다면 교환
+            if(heap[root] < heap[c] && c<i)
+            {
+                temp = heap[root];
+                heap[root] = heap[c];
+                heap[c]=temp;
+            }
+            root = c;
+        } while (c<i);
+        
+    }
+}
+
 int main()
 {
     music m[100];
@@ -81,6 +230,7 @@ int main()
     int menu;
     int irank, ilike;
     int erank, erase;
+    int sortdata, sortmenu;
     string iname, isinger, ialbum;
     cout << "==============================================" << endl;
     while (1)
@@ -115,7 +265,34 @@ int main()
         }
         else if (menu == 2) //sort
         {
-            //소팅...
+            cout<<"pick the data that you want to sort"<<endl << "1. rank"<<endl<<"2. name of song"<<endl<<"3. singer"<<endl<<"4. album"<<endl<< "5. likes"<<endl;
+            cin >>sortdata;
+            cout <<"pick how to sort"<<endl <<"1. bubble"<<endl <<"2. heap"<<endl;
+            if(sortdata ==1)
+            {
+                bubbleint(m.rank, insertcnt);
+            }
+            else if(sortdata ==2)
+            {
+
+            }
+            else if(sortdata ==3)
+            {
+                
+            }
+            else if(sortdata ==4)
+            {
+                
+            }
+            else if(sortdata ==5)
+            {
+                
+            }
+            else
+            {
+                cout<<"wrong menu";
+            }
+
         }
         else if (menu == 3) //erase
         {

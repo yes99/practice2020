@@ -22,7 +22,7 @@ void flowchart(string pattern, int fail[])
         cout << Parray[i];
     }
     cout << endl;
-    //flow chart ì‘ì„± ì‹œì‘ 
+    //flow chart ÀÛ¼º ½ÃÀÛ 
     for (i = 3; i < pattern.length() + 1; i++)
     {
         if (Parray[i - 1] == Parray[fail[i - 1]])
@@ -68,7 +68,7 @@ void kmpmove(string text, string pattern, int fail[])
     int cnt;
     for (i = 0; i < text.length(); i++)
     {
-        cout << "now you are at "<< i << "   ";
+        cout << "now you are at " << i << "   ";
         cnt = 1;
         for (j = 0; j < pattern.length(); j++)
         {
@@ -78,21 +78,21 @@ void kmpmove(string text, string pattern, int fail[])
             }
             else
             {
-                cout << "miss match at " << i+j << endl;
+                cout << "miss match at " << i + j << endl;
                 break;
             }
         }
-        if (cnt == pattern.length()+1)
+        if (cnt == pattern.length() + 1)
         {
             printf("\nfind at %d\n", i);
-            //move = cnt - fail[cnt-1];
-            //i = i + move-1;
+            move = cnt - fail[cnt - 1];
+            i = i + move - 1;
         }
         else
         {
-            //í•µì‹¬êµ¬ê°„
+            //ÇÙ½É±¸°£
             move = cnt - fail[cnt];
-            i = i + move-1;
+            i = i + move - 1;
         }
     }
 }
@@ -106,7 +106,7 @@ int suffix(string pattern, int a)
     int check;
     for (j = 0; j < a + 1; j++)
     {
-        for (i = 0; i <l; i++)
+        for (i = 0; i < l; i++)
         {
             check = l - j + i - 1;
 
@@ -134,14 +134,14 @@ int matchjump(string pattern, string part, int i, string originpattern)
     int save1 = -100;
     int save2 = -100;
     int m = originpattern.length();
-    int q = suffix(originpattern, m-i-1);
+    int q = suffix(originpattern, m - i - 1);
     cout << "suffix is " << q << endl;
     do
     {
         found = pattern.find(part, found + 1);
-        if (found != -1) //ì°¾ê¸´ ì°¾ìŒ?
+        if (found != -1) //Ã£±ä Ã£À½?
         {
-            if (originpattern[found - 1] != originpattern[i-1])
+            if (originpattern[found - 1] != originpattern[i - 1])
             {
                 save1 = found;
             }
@@ -149,79 +149,79 @@ int matchjump(string pattern, string part, int i, string originpattern)
             {
                 save2 = found;
             }
-            cout <<"P(r-1) = " <<originpattern[found - 1] <<"  P(k) =" << originpattern[i] << endl;
-            cout << "found at " << found << " ||save1 :" << save1 << " save2 :" << save2<< endl;
+            cout << "P(r-1) = " << originpattern[found - 1] << "  P(k) =" << originpattern[i] << endl;
+            cout << "found at " << found << " ||save1 :" << save1 << " save2 :" << save2 << endl;
         }
     } while (found != -1);
 
-    cout << "FINAL SAVE||" << "save 1 :" << save1 << " save 2 :" << save2<< endl;
-    cout<< "m = " << m  << " k  = " <<i  << " q =  " << q << " r = " << save1+1 << endl;
+    cout << "FINAL SAVE||" << "save 1 :" << save1 << " save 2 :" << save2 << endl;
+    cout << "m = " << m << " k  = " << i << " q =  " << q << " r = " << save1 + 1 << endl;
 
-    if (save1 == -100 && save2 == -100)  //1  ì¼ì¹˜í•˜ëŠ” ê²ƒì´ ì—†ì–´ì„œ 
+    if (save1 == -100 && save2 == -100)  //1  ÀÏÄ¡ÇÏ´Â °ÍÀÌ ¾ø¾î¼­ 
     {
         answer = m - i + m - q;
-        cout << 1 <<endl;
+        cout << 1 << endl;
     }
     else if (save1 == -100 && save2 != -100) //2
     {
         answer = m - i + m - q;
-        cout << 2 <<endl;
+        cout << 2 << endl;
 
     }
-    else if(save1 != -100 && save2 == -100) //3
+    else if (save1 != -100 && save2 == -100) //3
     {
-        answer = m- (save1+1)+1;
-        cout << 3 <<endl;
+        answer = m - (save1 + 1) + 1;
+        cout << 3 << endl;
 
     }
-    else if (save1 == 0 && save2 !=-100) //íŠ¹ë³„ ì˜ˆì™¸ì‚¬í•­
+    else if (save1 == 0 && save2 != -100) //Æ¯º° ¿¹¿Ü»çÇ×
     {
         answer = m - i + m - q;
-        cout << "exception" <<endl;
+        cout << "exception" << endl;
     }
     else //4
     {
-        answer = m- (save1+1) +1;
-        cout << 4 <<endl;
+        answer = m - (save1 + 1) + 1;
+        cout << 4 << endl;
 
     }
-    
+
     return answer;
 }
 
 void mjarray(string p, int mj[])
 {
-    int i,j,k;
+    int i, j, k;
     int m = p.length(); //6
     int matchjumpnum;
     string temppattern;
     string temppart;
     mj[m] = 1;
-    for (i = m - 1; i > 0; i--) // ì ëŒë¦´ê²Œìš”...
+    for (i = m - 1; i > 0; i--) // ÀÚ µ¹¸±°Ô¿ä...
     {
-        temppattern = p.substr(0, m-1);
+        temppattern = p.substr(0, m - 1);
         temppart = p.substr(i, m);
 
         cout << i << " position wrong p[" << i << "] " << temppattern << " " << temppart << endl;
-        matchjumpnum = matchjump(temppattern, temppart, i , p);
+        matchjumpnum = matchjump(temppattern, temppart, i, p);
         mj[i] = matchjumpnum;
-        cout <<endl;
+        cout << endl;
     }
 }
 
 
 void calbm(string t, string p, int mj[])
 {
-    int i , j;
+    int i, j;
     int cnt;
     int m = p.length(); //6
- 
+
     for (i = 0; i < t.length(); i++)
     {
         cnt = 0;
-        for(j=0;j<m;j++)
+        for (j = 0; j < m; j++)
         {
-            if(t[i+m-1-j] != p[m-j-1])
+            if (t[i + m - 1 - j] != p[m - j - 1])
             {
                 break;
             }
@@ -229,16 +229,16 @@ void calbm(string t, string p, int mj[])
             {
                 cnt++;
             }
-        } 
+        }
         if (cnt == p.length())
         {
             printf("\nfind at %d\n", i);
         }
         else
         {
-            //í•µì‹¬êµ¬ê°„
-            i = i + mj[m-j] - (m-(m-j)) -1;
-        }    
+            //ÇÙ½É±¸°£
+            i = i + mj[m - j] - (m - (m - j)) - 1;
+        }
     }
 }
 
@@ -247,46 +247,46 @@ void calbm(string t, string p, int mj[])
 
 int main()
 {
-    string text = "abababababababababab";//"abcbcabbabababcaabbcceabedabcabcab";
-    string badcode = "abab";//"edabcabcab";
+    string text = "012348945132484567";
+    string badcode = "0123456789!@";
     int lcode = 4;
     string codep[100];
     int lbadcode = badcode.length();
-    int i, j,k;
+    int i, j, k;
     int fail[100];
     int mj[100];
-    for(i=0;i<lbadcode - lcode+1;i++)
+    for (i = 0; i < lbadcode - lcode + 1; i++)
     {
         codep[i] = badcode.substr(i, lcode);
     }
 
-    for(i=0;i<lbadcode - lcode+1;i++)
+    for (i = 0; i < lbadcode - lcode + 1; i++)
     {
-        cout << i << " " <<codep[i]<<endl;
+        cout << i << " " << codep[i] << endl;
     }
-    cout<<endl;
-    cout<<endl;
-    cout<<endl;
-    cout<<endl;
-    cout <<"BM"<<endl;
-    for(i=0;i<lbadcode - lcode+1;i++)
+    cout << endl;
+    cout << endl;
+    cout << endl;
+    cout << endl;
+    cout << "BM" << endl;
+    for (i = 0; i < lbadcode - lcode + 1; i++)
     {
         mjarray(codep[i], mj);
-       calbm(text, codep[i], mj);
-       cout<<endl;
+        calbm(text, codep[i], mj);
+        cout << endl;
     }
 
-  
-    cout<<endl;
-    cout<<endl;
-    cout<<endl;
-    cout<<endl;
-        cout << " KMP"<<endl;
 
-  for(i=0;i<lbadcode - lcode+1;i++)
+    cout << endl;
+    cout << endl;
+    cout << endl;
+    cout << endl;
+    cout << " KMP" << endl;
+
+    for (i = 0; i < lbadcode - lcode + 1; i++)
     {
         flowchart(codep[i], fail);
-        kmpmove(text, codep[i],fail);
-        cout<<endl;
+        kmpmove(text, codep[i], fail);
+        cout << endl;
     }
 }

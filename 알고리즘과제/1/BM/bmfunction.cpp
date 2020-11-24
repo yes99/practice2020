@@ -1,102 +1,6 @@
 #include <iostream>
-#include<fstream>
-#include<string>
-#include <math.h>
+#include <string>
 using namespace std;
-// ii >>
-// oo <<
-void flowchart(string pattern, int fail[])
-{
-    int i;
-    char Parray[100];
-    int check, x;
-    fail[1] = 0;
-    fail[2] = 1;
-
-    for (i = 1; i < pattern.length() + 1; i++)
-    {
-        Parray[i] = pattern[i - 1];
-    }
-    for (i = 1; i < pattern.length() + 1; i++)
-    {
-        cout << Parray[i];
-    }
-    cout << endl;
-    //flow chart 작성 시작 
-    for (i = 3; i < pattern.length() + 1; i++)
-    {
-        if (Parray[i - 1] == Parray[fail[i - 1]])
-        {
-            fail[i] = fail[i - 1] + 1;
-        }
-        else
-        {
-            check = i;
-            if (fail[fail[i - 1]] == 0)
-            {
-                fail[i] = 1;
-            }
-            else
-            {
-                x = fail[check - 1];
-                do
-                {
-                    if (fail[x] == 0)
-                    {
-                        fail[check] = 1;
-                        break;
-                    }
-                    else if (Parray[fail[x]] == Parray[i - 1])
-                    {
-                        fail[check] = Parray[i - 1] + 1;
-                        break;
-                    }
-                    else
-                    {
-                        x = fail[x];
-                    }
-                } while (1);
-            }
-        }
-    }
-}
-
-void kmpmove(string text, string pattern, int fail[])
-{
-    int move;
-    int i, j;
-    int cnt;
-    for (i = 0; i < text.length(); i++)
-    {
-        cout << "now you are at "<< i << "   ";
-        cnt = 1;
-        for (j = 0; j < pattern.length(); j++)
-        {
-            if (text[i + j] == pattern[j])
-            {
-                cnt++;
-            }
-            else
-            {
-                cout << "miss match at " << i+j << endl;
-                break;
-            }
-        }
-        if (cnt == pattern.length()+1)
-        {
-            printf("\nfind at %d\n", i);
-            //move = cnt - fail[cnt-1];
-            //i = i + move-1;
-        }
-        else
-        {
-            //핵심구간
-            move = cnt - fail[cnt];
-            i = i + move-1;
-        }
-    }
-}
-
 
 int suffix(string pattern, int a)
 {
@@ -244,49 +148,30 @@ void calbm(string t, string p, int mj[])
 
 
 
-
 int main()
 {
-    string text = "abababababababababab";//"abcbcabbabababcaabbcceabedabcabcab";
-    string badcode = "abab";//"edabcabcab";
-    int lcode = 4;
-    string codep[100];
-    int lbadcode = badcode.length();
-    int i, j,k;
-    int fail[100];
+    // 검색 대상 문자열
+    string t = "abcbcabbabababcaabbcceabedabcabcab";
+    // 어떤 문자들을 찾아볼 것인가?,2
+    string p = "edabcabcab";
+    int i,j,k;
     int mj[100];
-    for(i=0;i<lbadcode - lcode+1;i++)
-    {
-        codep[i] = badcode.substr(i, lcode);
-    }
+    int m = p.length(); //6
+    int cnt;
+    cout << endl;
 
-    for(i=0;i<lbadcode - lcode+1;i++)
-    {
-        cout << i << " " <<codep[i]<<endl;
-    }
-    cout<<endl;
-    cout<<endl;
-    cout<<endl;
-    cout<<endl;
-    cout <<"BM"<<endl;
-    for(i=0;i<lbadcode - lcode+1;i++)
-    {
-        mjarray(codep[i], mj);
-       calbm(text, codep[i], mj);
-       cout<<endl;
-    }
+    mjarray(p, mj);
 
-  
-    cout<<endl;
-    cout<<endl;
-    cout<<endl;
-    cout<<endl;
-        cout << " KMP"<<endl;
-
-  for(i=0;i<lbadcode - lcode+1;i++)
+    cout << endl;
+    for(i=1;i < m+1;i++)
     {
-        flowchart(codep[i], fail);
-        kmpmove(text, codep[i],fail);
-        cout<<endl;
+        cout << mj[i]<< " ";
     }
+    cout << endl;
+    
+    calbm(t, p, mj);
+
+
+    //핵심구간
+
 }
