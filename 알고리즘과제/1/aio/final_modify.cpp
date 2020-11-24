@@ -312,7 +312,6 @@ int main()
     string badcode;
     int lcode;
     string codep[100];
-    int lbadcode = badcode.length();
     int i, j, k;
     int fail[100];
     int mj[100];
@@ -348,6 +347,8 @@ int main()
     cin >> badcode;
     cout<< "length of bad code";
     cin >> lcode;
+    int lbadcode = badcode.length();
+
     for (i = 0; i < lbadcode - lcode + 1; i++)
     {
         codep[i] = badcode.substr(i, lcode);
@@ -360,8 +361,8 @@ int main()
 
     cout << "BM" << endl;
     clock_t start, end;
-    int bmcnt = 0;
-    int kmpcnt = 0;
+    int bmcnt = 0, kmpcnt = 0;
+    int fbmcnt =0, fkmpcnt = 0;
     double bmt, kmpt;
     start = clock();
     for (j = 0; j < 3; j++)
@@ -375,13 +376,18 @@ int main()
                 bmcnt++;
             }
         }
+        if(bmcnt > 0)
+        {
+            fbmcnt++;
+            bmcnt = 0;
+        }
     }
     end = clock();
     bmt =double(end -start);
 
     cout << "BM" << endl;
-    cout << "how many virus program :" << bmcnt << endl;
-    cout << "no virus " << howmanytext - bmcnt;
+    cout << "how many virus program :" << fbmcnt << endl;
+    cout << "no virus " << howmanytext - fbmcnt;
 
     cout << " KMP" << endl;
     start = clock();
@@ -398,12 +404,17 @@ int main()
                 kmpcnt++;
             }
         }
+        if(kmpcnt > 0)
+        {
+            fkmpcnt++;
+            kmpcnt = 0;
+        }
     }
     end = clock();
     kmpt = double(end -start);
     cout << "KMP" << endl;
-    cout << "how many virus program :" << kmpcnt << endl;
-    cout << "no virus " << howmanytext - kmpcnt<<endl;
+    cout << "how many virus program :" << fkmpcnt << endl;
+    cout << "no virus " << howmanytext - fkmpcnt<<endl;
     cout << "bmtime : "<< bmt<<"ms"<<endl;
     cout << "kmptime : " <<kmpt<<"ms"<<endl;
 
