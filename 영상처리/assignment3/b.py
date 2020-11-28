@@ -1,7 +1,7 @@
 import numpy as np
 import cv2
 
-img = cv2.imread('dgu_night.png',0)
+img = cv2.imread('dgu_night_color.png',0)
 
 #정상적으로 출력되는지 확인
 cv2.imshow('image1',img)
