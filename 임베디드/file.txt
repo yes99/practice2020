@@ -1,0 +1,33 @@
+    FILE *fp;
+
+
+while (1)
+    {
+        clientlen = sizeof(clientaddr);
+        cfd = accept(sfd, &clientaddr, &clientlen);
+
+        /* 클라이언트의 도메인 이름과 IP 주소 결정 */
+        hp = gethostbyaddr((char *)&clientaddr.sin_addr.s_addr, sizeof(clientaddr.sin_addr.s_addr), AF_INET);
+        haddrp = inet_ntoa(clientaddr.sin_addr);
+        printf("서버: %s (%d)에 연결됨\n", haddrp, clientaddr.sin_port);
+        if (fork() == 0)
+        {
+            readLine(cfd, inmsg);
+            fp = fopen(inmsg, "r");
+            if (fp == NULL)
+            {
+                write(cfd, "해당 파일 없음", 10);
+            }
+            else
+            { /* 파일에서 한 줄씩 읽어 소켓을 통해 보낸다 */
+                while (fgets(outmsg, MAXLINE, fp) != NULL)
+                {
+                    write(cfd, outmsg, strlen(outmsg) + 1);
+                }
+            }
+            close(cfd);
+            exit(0);
+        }
+        else
+            close(cfd);
+    } // while
