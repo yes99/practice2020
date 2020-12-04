@@ -99,10 +99,11 @@ int DATA_SEND_RECV(int sock_flag, char stid[])
     char flag[15];
     char data[200];
     char temp[200];
-    int endflag=0;
+    int endflag =0;
     //while(true){...}
     while (1)
     {
+
         if(endflag ==1)
         {
             break;
@@ -254,7 +255,6 @@ int DATA_SEND_RECV(int sock_flag, char stid[])
             strcat(buf, "|NULL\n");
             printf("전송한 문자는 %s\n", buf);
             write(sock_flag, buf, sizeof(buf));
-            memset(buf, 0x00, MAX);
             read(sock_flag, buf, sizeof(buf));
             printf("From server: %s\n", buf);
             endflag++;

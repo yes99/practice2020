@@ -153,6 +153,7 @@ int DATA_SEND_RECV(int sock_flag, char stid[])
                     printf("전송한 문자는 %s\n", buf);
                     write(sock_flag, buf, sizeof(buf));
                 }
+                close(fd);
                 memset(buf, 0x00, MAX);
                 strcpy(buf, "FLAG_UPLOAD|");
                 strcat(buf, stid);
@@ -163,8 +164,7 @@ int DATA_SEND_RECV(int sock_flag, char stid[])
                 memset(buf, 0x00, MAX);
                 read(sock_flag, buf, sizeof(buf));
                 printf("From server: %s\n", buf);
-
-                close(fd);
+                
             }
             else
             {
