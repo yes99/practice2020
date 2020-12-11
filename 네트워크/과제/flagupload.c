@@ -10,7 +10,6 @@ int main()
    char buff[BUFF_SIZE];
    int fd;
    ssize_t rd_size;
-
    char file[50];
    printf("flag upload를 사용합니다: ");
    printf("업로드 할 파일은?");

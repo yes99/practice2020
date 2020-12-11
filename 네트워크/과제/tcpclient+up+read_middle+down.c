@@ -1,9 +1,8 @@
 #include <stdio.h>
 #include <sys/socket.h> //socket
 #include <netinet/in.h> //IPPROTO_TCP, sockaddr_in
-#include <string.h>
-#include <stdlib.h> //implicit declaration of function exit
-#include <string.h> //memset()
+#include <stdlib.h>     //implicit declaration of function exit
+#include <string.h>     //memset()
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -64,6 +63,10 @@ int main(int argc, char *argv[])
     int sock_flag, conn_flag;
     struct sockaddr_in server_addr;
     strcpy(stid, argv[0]);
+    for (int i = 0; i < strlen(stid); i++)
+    {
+        stid[i] = stid[i + 2];
+    }
     if ((sock_flag = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0)
     {
         printf("Socket 생성 실패...\n");
@@ -101,7 +104,6 @@ int DATA_SEND_RECV(int sock_flag, char stid[])
     char data[200];
     char temp[200];
     int endflag = 0;
-    //while(true){...}
     while (1)
     {
         if (endflag == 1)
@@ -111,16 +113,19 @@ int DATA_SEND_RECV(int sock_flag, char stid[])
         int num;
         int check;
         printf("메뉴입니다.\n");
-        printf("1.flag_chat\n2.flag_upload\n3.flag_download\n4.flag_list_user\n5.flag_list_files\n6.flag_exit\n");
+        printf("1.flag_chat\n2.flag_upload\n3.flag_download\n4.flag_list_files\n5.flag_list_user\n6.flag_exit\n");
         printf("원하는 플래그를 선택하십시오");
         scanf("%d", &num);
         if (num == 1)
         {
+            char word[200];
             printf("flag chat을 사용합니다 ");
+            scanf("%s", word);
             memset(buf, 0x00, MAX);
             strcpy(buf, "FLAG_CHAT|");
             strcat(buf, stid);
-            strcat(buf, "|Hello World\n");
+            strcat(buf, "|");
+            strcat(buf, word);
             printf("전송한 문자는 %s\n", buf);
             write(sock_flag, buf, sizeof(buf));
             memset(buf, 0x00, MAX);
@@ -158,11 +163,9 @@ int DATA_SEND_RECV(int sock_flag, char stid[])
                 strcat(buf, "EOF");
                 printf("전송한 문자는 %s\n", buf);
                 write(sock_flag, buf, sizeof(buf));
-                //buf[0] = '\0';
                 memset(buf, 0x00, MAX);
                 read(sock_flag, buf, sizeof(buf));
                 printf("From server: %s\n", buf);
-
                 close(fd);
             }
             else
@@ -170,7 +173,7 @@ int DATA_SEND_RECV(int sock_flag, char stid[])
                 printf("파일 열기에 실패했습니다.\n");
             }
         }
-        else if (num == 3) //무엇을 더 해야하는가?
+        else if (num == 3)
         {
             char file[200];
             char tempdata[50];
@@ -187,83 +190,42 @@ int DATA_SEND_RECV(int sock_flag, char stid[])
             strcat(buf, file);
             printf("전송한 문자는 %s\n", buf);
             write(sock_flag, buf, sizeof(buf)); //서버에다가 보내는것
+            memset(buf, 0x00, MAX);
             read(sock_flag, buf, sizeof(buf));
             token(buf, flag, stid, data);
             strcpy(tempdata, data);
             printf("파일명 : %s", file);
-            if (strcmp(tempdata, "[ERR] Not found file.") != 0)
+            if (strcmp(tempdata, "DOWNLOAD-ERROR: No such file") != 0)
             {
                 if ((fd = open(originfile, O_WRONLY | O_CREAT, 0644)) < 0)
                 {
                     printf("Failed to Open File...\n");
-                    break; 
+                    break;
                 }
                 else
                 {
                     printf("파일명 : %s", file);
-                    while (strcmp(tempdata, "[DOWNLOAD] Done") != 0)
+                    while (strcmp(tempdata, "[DOWNLOAD] Done.") != 0)
                     {
                         write(fd, tempdata, strlen(tempdata));
-                        printf("입력한 데이터 : %s\n", tempdata);
+                        //printf("입력한 데이터 : %s\n", tempdata);
+                        memset(buf, 0x00, MAX);
                         read(sock_flag, buf, sizeof(buf));
                         token(buf, flag, stid, data);
                         strcpy(tempdata, data);
-                        printf("입력할 데이터 : %s\n", tempdata);
+                        memset(buf, 0x00, MAX);
+
+                        //printf("입력할 데이터 : %s\n", tempdata);
                     }
+                    memset(buf, 0x00, MAX);
+                    read(sock_flag, buf, sizeof(buf));
                 }
                 close(fd);
             }
         }
         else if (num == 4)
         {
-            int check;
-            printf("flag list user을 사용합니다");
-            memset(buf, 0x00, MAX);
-            strcpy(buf, "FLAG_LIST_USER|");
-            strcat(buf, stid);
-            strcat(buf, "|NULL");
-            printf("전송한 문자는 %s\n", buf);
-            write(sock_flag, buf, sizeof(buf));
-            memset(buf, 0x00, MAX);
-            read(sock_flag, buf, sizeof(buf));
-            printf("From server: %s\n", buf);
-            token(buf, flag, stid, data);
-            if (strlen(data) > 200)
-            {
-                printf("%s\n", data);
-                memset(buf, 0x00, MAX);
-                read(sock_flag, buf, sizeof(buf));
-                printf("From server: %s\n", buf);
-                token(buf, flag, stid, data);
-                printf("%s\n", data);
-            }
-            else
-            {
-                printf("%s", data);
-            }
-
-            //read(sock_flag, buf, sizeof(buf)); //두번하면 되려나?
-            //printf("From server: %s\n", buf);
-            //token(buf, flag, stid, data);
-            //printf("%s\n", data);
-            /*while (1)
-            {
-                memset(buf, 0x00, MAX);
-                check = read(sock_flag, buf, sizeof(buf));
-                if(check<0)
-                {
-                    break;
-                }
-                printf("From server: %s\n", buf);
-                token(buf, flag, stid, data);
-                printf("%s\n", data);
-
-            }*/
-        }
-        else if (num == 5)
-        {
             printf("flag list file을 사용합니다.");
-
             memset(buf, 0x00, MAX);
             strcpy(buf, "FLAG_LIST_FILE|");
             strcat(buf, stid);
@@ -274,38 +236,44 @@ int DATA_SEND_RECV(int sock_flag, char stid[])
             read(sock_flag, buf, sizeof(buf));
             printf("From server: %s\n", buf);
             token(buf, flag, stid, data);
-            if (strlen(data) < 200)
-            {
-                printf("%s", data);
-            }
-            else
-            {
-                while (strlen(data) > 200)
-                {
-                    printf("%s ", data);
-                    memset(buf, 0x00, MAX);
-                    read(sock_flag, buf, sizeof(buf));
-                    printf("From server: %s\n", buf);
-                    //token(buf, flag, stid, data);
-                    printf("%s", data);
-                }
-            }
-
             printf("%s\n", data);
+        }
+        else if (num == 5)
+        {
+            int check;
+            int z = 0;
+            char *token[3];
+            printf("flag list user을 사용합니다");
+            memset(buf, 0x00, MAX);
+            strcpy(buf, "FLAG_LIST_USER|");
+            strcat(buf, stid);
+            strcat(buf, "|NULL");
+            write(sock_flag, buf, sizeof(buf));
+            printf("전송한 문자는 %s\n", buf);
+            read(sock_flag, buf, sizeof(buf));
+            token[0] = strtok(buf, "|");
+            token[1] = strtok(NULL, "|");
+            token[2] = strtok(NULL, "|");
+            strcpy(data, token[2]);
+            printf("token 완료+ data: %s", data);
 
-            /*do
+            while (1)
             {
-                buf[0] = '\0';
-
                 memset(buf, 0x00, MAX);
-                check = read(sock_flag, buf, sizeof(buf));
-                if (check < 0)
+                if (read(sock_flag, buf, sizeof(buf)) > 0)
+                {
+                    token[0] = strtok(buf, "|");
+                    token[1] = strtok(NULL, "|");
+                    token[2] = strtok(NULL, "|");
+                    strcpy(data, token[2]);
+                    printf("token 완료+ data: %s", data);
+                }
+                else
                 {
                     break;
                 }
-                printf("From server: %s\n", buf);
-            } while (check > 0);
-            */
+                memset(token, 0x00, 3);
+            }
         }
         else if (num == 6)
         {

@@ -6,7 +6,7 @@
          if (0 > (fd = open(data, O_WRONLY | O_CREAT,0644)))
          {
             printf("Failed to Open File...\n");
-            break;
+            break; // 이게 실행 될일은 없겠지만 브뤡 하면 프로그램 자체 종료됨 ㅋㅋ
          }
 
          write(sock_flag, buf, sizeof(buf));

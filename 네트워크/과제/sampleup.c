@@ -18,7 +18,8 @@ int main()
          puts( buff);
       }
       close( fd);
-   } else {
+   } else 
+   {
       printf( "파일 열기에 실패했습니다.\n");
    }
    return 0;
