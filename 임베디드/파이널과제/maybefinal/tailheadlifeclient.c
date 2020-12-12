@@ -39,7 +39,34 @@ int main(int argc, char *argv[])
         printf("서버 클라이언트 연결 성공...\n");
     }
 
-    DATA_SEND_RECV(sock_flag);
+    while(1)
+    {
+        if(  )
+        {
+            DATA_SEND_RECV(conn_flag); // 채팅
+        }
+        else if()
+        {
+            //369
+        }
+        else if()
+        {
+            //끝말잇기            
+        }
+        else if()
+        {
+            //숫자야구
+        }
+        else if()
+        {
+            //행맨
+        }
+        else if ()
+        {
+            break; // 프로그램 완전 끝내기
+        }
+        
+    }
 
     close(sock_flag);
 }
