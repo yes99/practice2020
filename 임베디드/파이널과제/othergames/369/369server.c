@@ -72,6 +72,7 @@ int DATA_SEND_RECV(int conn_flag)
     int ianswer;
     int num;
     int first = 0;
+    int check;
     int cnt; //박수칠 횟수
     char *answer = (char *)malloc(sizeof(char) * 10);
     char *num_string = (char *)malloc(sizeof(char) * 10);
@@ -80,6 +81,7 @@ int DATA_SEND_RECV(int conn_flag)
     while (1)
     {
         cnt = 0;
+        check = 0 ;   // 1은 정답 0은 오답
         memset(buf, 0x00, MAX);
         read(conn_flag, buf, sizeof(buf));
         printf("From client: %s\n", buf);
@@ -96,68 +98,92 @@ int DATA_SEND_RECV(int conn_flag)
             cnt++;
         if (c % 3 == 0 && c > 0)
             cnt++;
-        printf("1차 연산 완료 cnt = %d", cnt);
-        switch (cnt)
+        printf("1차 연산 완료 cnt = %d\n", cnt);
+        while (1)
         {
-        case 0:
-            scanf("%d", &ianswer);
-            if (ianswer == num)
+            switch (cnt)
             {
-                printf("정답!\n");
-                sprintf(buf, "%d", num+1);                
-                //strcpy(buf, itoa(num + 1, temp, 10));
-                write(conn_flag, buf, sizeof(buf));
-                break;
+            case 0:
+                scanf("%d", &ianswer);
+                if (ianswer == num)
+                {
+                    printf("정답!\n");
+                    sprintf(buf, "%d", num + 1);
+                    //strcpy(buf, itoa(num + 1, temp, 10));
+                    write(conn_flag, buf, sizeof(buf));
+                    check = 1;
+                    break;
+                }
+                else
+                {
+                    printf("오답! \n again :");
+                    check = 0;
+                    break;
+                }
+            case 1:
+                scanf("%s", answer);
+                if (strcmp(answer, "c") == 0)
+                {
+                   printf("정답!\n"); 
+                    sprintf(buf, "%d", num + 1);
+                    //strcpy(buf, itoa(num + 1, temp, 10));
+                    write(conn_flag, buf, sizeof(buf));
+                    check = 1;
+                    break;
+                }
+                else
+                {
+                    printf("오답! \n again :");
+                    check = 0;
+                    break;
+                }
+            case 2:
+                scanf("%s", answer);
+                if (strcmp(answer, "cc") == 0)
+                {
+                    printf("정답!\n");
+                    sprintf(buf, "%d", num + 1);
+                    //strcpy(buf, itoa(num + 1, temp, 10));
+                    write(conn_flag, buf, sizeof(buf));
+                    check = 1;
+                    break;
+                }
+                else
+                {
+                    printf("오답! \n again :");
+                    check = 0;
+                    break;
+                }
+            case 3:
+                scanf("%s", answer);
+                if (strcmp(answer, "ccc") == 0)
+                {
+                    printf("정답!\n");
+                    sprintf(buf, "%d", num + 1);
+                    //strcpy(buf, itoa(num + 1, temp, 10));
+                    write(conn_flag, buf, sizeof(buf));
+                    check = 1;
+                    break;
+                }
+                else
+                {
+                    printf("오답! \n again :");
+                    check = 0;
+                    break;
+                }
             }
-            else
+            
+            printf("스위치문 탈출, if분기접 시작 \n");
+            if(check ==1)
             {
-                printf("오답!\n");
                 break;
-            }
-        case 1:
-            scanf("%s", answer);
-            if (strcmp(answer, "c") == 0)
+            }         
+            else if(check ==0)
             {
-                sprintf(buf, "%d", num+1);                                
-                //strcpy(buf, itoa(num + 1, temp, 10));
-                write(conn_flag, buf, sizeof(buf));
-                break;
+                printf("정답을 다시 입력하세요: ");
             }
-            else
-            {
-                printf("오답!\n");
-                break;
-            }
-        case 2:
-            scanf("%s", answer);
-            if (strcmp(answer, "cc") == 0)
-            {
-                sprintf(buf, "%d", num+1);                                
-                //strcpy(buf, itoa(num + 1, temp, 10));
-                write(conn_flag, buf, sizeof(buf));
-                break;
-            }
-            else
-            {
-                printf("오답!\n");
-                break;
-            }
-        case 3:
-            scanf("%s", answer);
-            if (strcmp(answer, "ccc") == 0)
-            {
-                sprintf(buf, "%d", num+1);                                
-                //strcpy(buf, itoa(num + 1, temp, 10));
-                write(conn_flag, buf, sizeof(buf));
-                break;
-            }
-            else
-            {
-                printf("오답!\n");
-                break;
-            }
-        }
 
+        }
         //printf("\nlength of buff : %d\n", strlen(buf));
         if (strncmp("exit", buf, 4) == 0)
         {
