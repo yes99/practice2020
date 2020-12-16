@@ -71,6 +71,7 @@ int main(int argc, char *argv[])
     memset(buft, 0x00, MAX);
     char menu;
     while (1) {
+        printf("select menu\n 1. datasend\n2. baseball\n3.hangman\n4.head and tail\n 5.369\n");
         read(conn_flag,buft,sizeof(buft));
         menu=buft[0];
         if(menu=='1'){
@@ -92,10 +93,6 @@ int main(int argc, char *argv[])
         }
     }
 
-    //DATA_SEND_RECV(conn_flag);
-    //BaseBall(conn_flag);
-    //Hangman(conn_flag);
-
     close(sock_flag);
 }
 
@@ -104,12 +101,16 @@ int DATA_SEND_RECV(int conn_flag)
       char buf[MAX];
     int idx;
 
-    //while(true){...}
     while(1)
     {
         memset(buf, 0x00, MAX);
         
         read(conn_flag, buf, sizeof(buf));
+        if(strncmp("exit", buf, 4) == 0)
+        {
+            printf("서버 종료 ...\n");
+            break;
+        }
         printf("From client: %s\nTo client: ", buf);
         memset(buf, 0x00, MAX);
         fgets(buf, MAX, stdin);
@@ -119,6 +120,7 @@ int DATA_SEND_RECV(int conn_flag)
         if(strncmp("exit", buf, 4) == 0)
         {
             printf("서버 종료 ...\n");
+            write(conn_flag, "exit", 4);
             break;
         }
     }
@@ -296,11 +298,11 @@ int tsn(conn_flag)
     //while(true){...}
     
     read(conn_flag, buf, sizeof(buf));
-    printf("1. i read \n buf  : %s", buf);  // number 4 goes, when we pick menu
-    printf("test : ");
+    //printf("1. i read \n buf  : %s", buf);  // number 4 goes, when we pick menu
+    printf("press any key");
     fgets(buf, MAX, stdin);
     write(conn_flag, buf, sizeof(buf));
-    printf("we cool");
+    printf("GAME START");
     while (1)
     {
         cnt = 0;
@@ -326,7 +328,7 @@ int tsn(conn_flag)
             cnt++;
         if (c % 3 == 0 && c > 0)
             cnt++;
-        printf("1차 연산 완료 cnt = %d\n", cnt);
+        //printf("1차 연산 완료 cnt = %d\n", cnt);
         while (1)
         {
             switch (cnt)
@@ -401,7 +403,7 @@ int tsn(conn_flag)
                 }
             }
             
-            printf("스위치문 탈출, if분기접 시작 \n");
+           // printf("스위치문 탈출, if분기접 시작 \n");
             if(check ==1)
             {
                 break;
@@ -419,12 +421,7 @@ int tsn(conn_flag)
             }
 
         }
-        //printf("\nlength of buff : %d\n", strlen(buf));
-        /*if (strncmp("exit", buf, 4) == 0)
-        {
-            printf("서버 종료 ...\n");
-            break;
-        }*/
+       
     }
 }
 

@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
     char menu;
     while(1)
     {
-        printf("select menu\n 1. datasend\n2. baseball\n3/hangman\n: ");
+        printf("select menu\n 1. datasend\n2. baseball\n3.hangman\n4.head and tail\n 5.369\n");
         scanf(" %c",&menu);
         sprintf(buf,"%c",menu);
         write(sock_flag,buf,sizeof(buf));
@@ -81,17 +81,17 @@ int DATA_SEND_RECV(int sock_flag)
 {
      char buf[MAX];
     int idx;
-
-    //while(true){...}
     while(1)
     {
-        printf("Enter the string: ");
-        //read(sock_flag, buf, sizeof(buf));
-        //printf("From client: %s\nTo client: ", buf;)
-        //memset(buf, 0x00, MAX);
+        printf("To Server: ");
         memset(buf, 0x00, MAX);
         fgets(buf, MAX, stdin);
-
+        if(strncmp("exit", buf, 4) == 0)
+        {
+            printf("서버 종료 ...\n");
+            write(sock_flag, "exit", 4);
+            break;
+        }
         write(sock_flag, buf, sizeof(buf));
         memset(buf, 0x00, MAX);
         read(sock_flag, buf, sizeof(buf));
@@ -195,7 +195,7 @@ int Hangman(int sock_flag)
 }
 int tsn(sock_flag)
 {
- printf("GAME START\n");
+    printf("GAME START\n");
     char buf[MAX];
     char buf2[MAX];
     int idx;
@@ -211,13 +211,13 @@ int tsn(sock_flag)
     char temp[100];
     int life = 2;
    
-         printf("test : ");
-        fgets(buf, MAX, stdin);
-     write(sock_flag, buf2, sizeof(buf));
+    printf("press any key : ");
+    fgets(buf, MAX, stdin);
+    write(sock_flag, buf2, sizeof(buf));
      
     read(sock_flag, buf, sizeof(buf));
-    printf("1. i read \n buf  : %s", buf);
-    printf("we cool?");
+    //printf("1. i read \n buf  : %s", buf);
+    printf("START 박수를 친다면 c 횟수만큼 누르시오");
     while (1)
     {
         //
@@ -245,7 +245,7 @@ int tsn(sock_flag)
             cnt++;
         if (c % 3 == 0 && c > 0)
             cnt++;
-        printf("1차 연산 완료 cnt = %d", cnt);
+        //printf("1차 연산 완료 cnt = %d", cnt);
         while (1)
         {
             switch (cnt)
@@ -273,7 +273,6 @@ int tsn(sock_flag)
                 {
                     printf("정답!\n");
                     sprintf(buf, "%d", num + 1);
-                    // strcpy(buf, itoa(num + 1, temp, 10));
                     write(sock_flag, buf, sizeof(buf));
                     check = 1;
                     break;
@@ -290,7 +289,6 @@ int tsn(sock_flag)
                 {
                     printf("정답!\n");
                     sprintf(buf, "%d", num + 1);
-                    //strcpy(buf, itoa(num + 1, temp, 10));
                     write(sock_flag, buf, sizeof(buf));
                     check = 1;
                     break;
@@ -307,7 +305,6 @@ int tsn(sock_flag)
                 {
                     printf("정답!\n");
                     sprintf(buf, "%d", num + 1);
-                    //strcpy(buf, itoa(num + 1, temp, 10));
                     write(sock_flag, buf, sizeof(buf));
                     check = 1;
                     break;
@@ -319,7 +316,7 @@ int tsn(sock_flag)
                     break;
                 }
             }
-            printf("스위치문 탈출, if분기접 시작 \n");
+            //printf("스위치문 탈출, if분기접 시작 \n");
             if(check ==1)
             {
                 break;
@@ -360,20 +357,16 @@ int ht(int sock_flag)
     int life = 4;
     int idx;
     int first = 0;
-        printf("test : ");
-        fgets(buf, MAX, stdin);
+    printf("press any key : ");
+    fgets(buf, MAX, stdin);
      write(sock_flag, buf2, sizeof(buf));
      
     read(sock_flag, buf, sizeof(buf));
     printf("1. i read \n buf  : %s", buf);
     printf("we cool?");
-    //while(true){...}
     while (1)
     {
         printf("Enter the string: ");
-        //read(sock_flag, buf, sizeof(buf));
-        //printf("From client: %s\nTo client: ", buf;)
-        //memset(buf, 0x00, MAX);
         if (first == 0)
         {
             printf("first word : ");
@@ -412,7 +405,7 @@ int ht(int sock_flag)
         printf("From server: %s\n", buf);
         if (strncmp("exit", buf, 4) == 0)
         {
-            printf("서버 종료 ...\n");
+            printf("server end ...\n");
             break;
         }
     }
