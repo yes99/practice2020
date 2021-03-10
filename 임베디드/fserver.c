@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
 
     if (argc != 2)
     {
-        fprintf(stderr, "사용법: % s<port>\n", argv[0]);
+        fprintf(stderr, "how to use: % s<port>\n", argv[0]);
         exit(0);
     }
     port = atoi(argv[1]);
@@ -57,14 +57,14 @@ int main(int argc, char *argv[])
         /* 클라이언트의 도메인 이름과 IP 주소 결정 */
         hp = gethostbyaddr((char *)&clientaddr.sin_addr.s_addr, sizeof(clientaddr.sin_addr.s_addr), AF_INET);
         haddrp = inet_ntoa(clientaddr.sin_addr);
-        printf("서버: %s (%d)에 연결됨\n", haddrp, clientaddr.sin_port);
+        printf("server: %s (%d) connected\n", haddrp, clientaddr.sin_port);
         if (fork() == 0)
         {
             readLine(cfd, inmsg);
             fp = fopen(inmsg, "r");
             if (fp == NULL)
             {
-                write(cfd, "해당 파일 없음", 10);
+                write(cfd, "no file\n", 10);
             }
             else
             { /* 파일에서 한 줄씩 읽어 소켓을 통해 보낸다 */

@@ -286,11 +286,13 @@ int calbm(string t, string p, int mj[])
         if (cnt == p.length())
         {
             printf("\nfind at %d\n", i);
+            i = i + mj[1] - (m-(1)) -1;
             flag = 1;
         }
         else
         {
             //핵심구간
+            cout<< "now you are at " << i <<endl;
             i = i + mj[m - j] - (m - (m - j)) - 1;
         }
     }

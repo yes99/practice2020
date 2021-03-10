@@ -478,7 +478,6 @@ int main()
             getline(cin, ialbum);
             cout << "like";
             cin >> ilike;
-            cin.ignore();
             start = clock();
             m[insertcnt].rank = irank;
             m[insertcnt].name = iname;

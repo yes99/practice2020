@@ -38,7 +38,7 @@ int main()
     } while (result == -1);
     printf("연결 요청 성공\n");
     printf("파일 이름 입력:");
-    scanf("% s", inmsg);
+    fgets(inmsg, MAXLINE, stdin);
     printf("입력 성공\n");
     write(cfd, inmsg, strlen(inmsg) + 1);
     printf("%d",write(cfd, inmsg, strlen(inmsg) + 1));

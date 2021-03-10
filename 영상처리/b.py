@@ -10,8 +10,6 @@ histogram = np.zeros((256,),dtype=np.float64)
 #구해온 히스토그램을 바탕으로 equalization 계산을 위해 쓴다 
 cal = np.zeros((256,),dtype=np.float64)
 #float16으로 하니까, 용량때문에 수치가 너무 커져서 64로 바꿔주니 정상으로 작동한다
-
-
 height,width=img.shape
 #현재 주어진 수치들을 확인한다.
 print ("height = ", height)
@@ -31,7 +29,6 @@ for i in range(width):
 
 print("다시 A출력")
 print(histogram)   
-
 
 #누적으로 계산을 먼저 해주는 것이 좋다
 for i in range(256):

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <stack>
+#include<string>
 #include <list>
 using namespace std;
 
@@ -44,7 +45,8 @@ int main()
         }
     }
 
-    for(i=0;i<temp.size();i++)
+
+    while(!temp.empty())
     {
         s.push(temp.front());
         temp.pop_front();

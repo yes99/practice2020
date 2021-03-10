@@ -2,7 +2,7 @@ import numpy as np
 import cv2
 
 def histogram():
-    img = cv2.imread('kei.png', cv2.IMREAD_GRAYSCALE)
+    img = cv2.imread('arin.png', cv2.IMREAD_GRAYSCALE)
 
     hist, bins = np.histogram(img.ravel(), 256, [0, 256])
     print("hist\n")

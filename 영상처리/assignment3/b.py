@@ -1,12 +1,17 @@
 import numpy as np
 import cv2
 
-img = cv2.imread('dgu_night_color.png',0)
+img = cv2.imread('nine.png',cv2.IMREAD_COLOR)
 
 #정상적으로 출력되는지 확인
 cv2.imshow('image1',img)
+#색을 쪼갠다. 
+b,g,r = cv2.split(img)
 #히스토그램을 긁어오는데 쓴다
-histogram = np.zeros((256,),dtype=np.float64)
+histogramR = np.zeros((256,),dtype=np.float64)
+histogramG = np.zeros((256,),dtype=np.float64)
+histogramB = np.zeros((256,),dtype=np.float64)
+histogramY = np.zeros((256,),dtype=np.float64)
 #구해온 히스토그램을 바탕으로 equalization 계산을 위해 쓴다 
 cal = np.zeros((256,),dtype=np.float64)
 #float16으로 하니까, 용량때문에 수치가 너무 커져서 64로 바꿔주니 정상으로 작동한다
@@ -15,7 +20,7 @@ height,width=img.shape
 print ("height = ", height)
 print ("width  = ", width)
 print("histogram")
-print(histogram)
+
 print("cal")
 print(cal) 
 print("image")

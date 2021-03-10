@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
     }
 
     server_addr.sin_family = AF_INET;
-    server_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
+    server_addr.sin_addr.s_addr = inet_addr("172.30.1.15");
     server_addr.sin_port = htons(SERVER_PORT);
 
     if ((connect(sock_flag, (struct sockaddr *)&server_addr, sizeof(server_addr))) < 0)
@@ -357,6 +357,7 @@ int ht(int sock_flag)
     int life = 4;
     int idx;
     int first = 0;
+    int end = 0;
     printf("press any key : ");
     fgets(buf, MAX, stdin);
      write(sock_flag, buf2, sizeof(buf));

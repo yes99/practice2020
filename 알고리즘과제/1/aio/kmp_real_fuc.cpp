@@ -86,7 +86,7 @@ void kmpmove(string text, string pattern, int fail[])
         {
             printf("\nfind at %d\n", i);
             move = cnt - fail[cnt-1];
-            i = i + move-1;
+            i = i + move-2;
         }
         else
         {

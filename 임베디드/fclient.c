@@ -41,7 +41,8 @@ int main(int argc, char *argv[])
     /* 서버의 IP 주소와 포트 번호를 채운다. */
     if ((hp = gethostbyname(host)) == NULL)
     {
-        perror("gethostbyname error "); // 호스트 찾기 오류  bzero((char *) &serverAddr, sizeof(serverAddr));  serverAddr.sin_family = AF_INET;
+        perror("gethostbyname error "); // 호스트 찾기 오류  
+        bzero((char *) &serverAddr, sizeof(serverAddr));  serverAddr.sin_family = AF_INET;
     }
     bcopy((char *)hp->h_addr_list[0], (char *)&serverAddr.sin_addr.s_addr, hp->h_length);
     serverAddr.sin_port = htons(port);

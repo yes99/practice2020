@@ -71,7 +71,8 @@ def ycrbr_to_rgb(image):
             r[i,j] = (1)*(img[i,j][2]) + (0)*(img[i,j][1]) + (1.402)*(img[i,j][0])
             g[i,j] = (1)*(img[i,j][2]) + (-0.34414)*(img[i,j][1]) + (-0.71414)*(img[i,j][0])
             b[i,j] = (1)*(img[i,j][2]) + (1.772)*(img[i,j][1]) + (0)*(img[i,j][0])
-    #img_new = cv2.merge((b*255, g*255, r*255))
+    img_new = cv2.merge((b*255, g*255, r*255))
+    cv2.imwrite("ycrbrtorgb", img_new)
     RGB_img[...,0] = b*255
     RGB_img[...,1] = g*255
     RGB_img[...,2] = r*255
@@ -83,4 +84,4 @@ cv2.imwrite('HEQ_YCrBr_dgu.png', ycrbr)
 out_image = np.zeros((input_image.shape[0], input_image.shape[1], 3), float)
 out_image = ycrbr_to_rgb(ycrbr)
 
-#cv2.imwrite('HEQ2_mandrill.png', out_image)
+cv2.imwrite('HEQ2_mandrill.png', out_image)

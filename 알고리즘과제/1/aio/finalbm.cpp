@@ -137,10 +137,13 @@ void calbm(string t, string p, int mj[])
         if (cnt == p.length())
         {
             printf("\nfind at %d\n", i);
+            i = i + mj[1] - (m-(1)) -1;
         }
         else
         {
             //핵심구간
+            cout<< "now you are at " << i <<endl;
+
             i = i + mj[m-j] - (m-(m-j)) -1;
         }    
     }
@@ -151,9 +154,9 @@ void calbm(string t, string p, int mj[])
 int main()
 {
     // 검색 대상 문자열
-    string t = "abcbcabbabababcaabbcceabedabcabcab";
+    string t = "abababababab";   //"abcbcabbabababcaabbcceabedabcabcabaggwehwehawhwhahraehjeaj";
     // 어떤 문자들을 찾아볼 것인가?,2
-    string p = "edabcabcab";
+    string p = "abab" ;  //"edabcabcab";
     int i,j,k;
     int mj[100];
     int m = p.length(); //6

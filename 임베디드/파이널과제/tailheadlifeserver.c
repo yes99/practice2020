@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
     {
         printf("서버 클라이언트 연결 성공...\n");
     }
-
+    
     DATA_SEND_RECV(conn_flag);
 
     close(sock_flag);
@@ -88,7 +88,7 @@ int DATA_SEND_RECV(int conn_flag)
             else
             {
                 printf("\ndo it again\nTo client: ");
-                life--
+                life--;
             }
             if(life ==0)
             {

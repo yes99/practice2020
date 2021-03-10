@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 import math
-
+"""
 def rgb_to_ycrbr(image):
     img = (image.astype(float)/255)
     YCbCr_img = np.empty((img.shape[0], img.shape[1], 3), float)
@@ -9,10 +9,25 @@ def rgb_to_ycrbr(image):
     for i in range(image.shape[0]):
         for j in range(image.shape[1]):
             Y[i,j] = (0.299)*(img[i,j][2]) + (0.587)*(img[i,j][1]) + (0.114)*(img[i,j][0])
+    print("히스토그램 검토")
+    print(Y*255)
     Y = histogram_equalize(Y*255)
     YCbCr_img = Y
     return YCbCr_img
-
+"""
+def rgb_to_ycrbr1(image):
+    img = (image.astype(float))
+    b,g,r = cv2.split(img)
+    YCbCr_img = np.empty((img.shape[0], img.shape[1], 3), float)
+    Y = np.empty([img.shape[0],img.shape[1]], dtype = float)
+    for i in range(image.shape[0]):
+        for j in range(image.shape[1]):
+            Y[i,j] = (0.257)*(r[i,j]) + (0.504)*(g[i,j]) + (0.098)*(b[i,j]) +16
+    print("히스토그램 검토")
+    print(Y)
+    Y = histogram_equalize(Y)
+    YCbCr_img = Y
+    return YCbCr_img
 
 
 def originalY(image):
@@ -62,7 +77,7 @@ def histogram_equalize(img):
                 if (image[i, j] == value):
                     new_img[i, j] = final_array[value]
                     break
-    #cv2.imwrite('aaaa.png', new_img)
+    cv2.imwrite('histogram_equalize.png', new_img)
     return new_img
 
 
@@ -83,7 +98,7 @@ def rgb_to_y(image):
 
 
 input_image = cv2.imread('dgu_night_color.png', cv2.IMREAD_COLOR)
-hisy = rgb_to_ycrbr(input_image)
+hisy = rgb_to_ycrbr1(input_image)
 #cv2.imwrite('HEQ_Y_dgu.png', ycrbr)
 oriy = originalY(input_image)
 s = 0.8

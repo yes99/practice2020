@@ -131,6 +131,8 @@ int tsn(int sock_flag)
                 if (ianswer == num)
                 {
                     printf("정답!\n");
+                    memset(buf, 0x00, MAX);
+
                     sprintf(buf, "%d", num + 1);
                     //strcpy(buf, itoa(num + 1, temp, 10));
                     write(sock_flag, buf, sizeof(buf));
@@ -148,6 +150,7 @@ int tsn(int sock_flag)
                 if (strcmp(answer, "c") == 0)
                 {
                     printf("정답!\n");
+                    memset(buf, 0x00, MAX);
                     sprintf(buf, "%d", num + 1);
                     // strcpy(buf, itoa(num + 1, temp, 10));
                     write(sock_flag, buf, sizeof(buf));
@@ -165,6 +168,7 @@ int tsn(int sock_flag)
                 if (strcmp(answer, "cc") == 0)
                 {
                     printf("정답!\n");
+                    memset(buf, 0x00, MAX);
                     sprintf(buf, "%d", num + 1);
                     //strcpy(buf, itoa(num + 1, temp, 10));
                     write(sock_flag, buf, sizeof(buf));
@@ -182,6 +186,7 @@ int tsn(int sock_flag)
                 if (strcmp(answer, "ccc") == 0)
                 {
                     printf("정답!\n");
+                    memset(buf, 0x00, MAX);
                     sprintf(buf, "%d", num + 1);
                     //strcpy(buf, itoa(num + 1, temp, 10));
                     write(sock_flag, buf, sizeof(buf));

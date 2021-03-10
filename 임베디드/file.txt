@@ -1,4 +1,4 @@
-    FILE *fp;
+FILE *fp;
 
 
 while (1)

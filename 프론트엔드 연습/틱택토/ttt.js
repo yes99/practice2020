@@ -5,17 +5,23 @@ const trs = [tr1, tr2, tr3];
 const tds = [];
 let turn = 'X';
 
-const marking = function(event) {
+const marking = function(event) { //indexOf  문자내에서 특정한 문자열의 index 값을 리턴한다
+    //event.target 으로 이벤트 객체를 받아옵니다
+    //디버깅? 로그에다가 이거저거 써주고만 있으니까
+
     const trNumber = trs.indexOf(event.target.parentNode);
     console.log('trNumber', trNumber);
     const tdNumber = tds[trNumber].indexOf(event.target);
     console.log('tdNumber', tdNumber);
 
-    if (tds[trNumber][tdNumber].textContent !== '') { // 칸이 이미 채워져 있는가?
+    //if (tds[trNumber][tdNumber].textContent !== '') 
+    if (tds[trNumber][tdNumber].innerText !== '') { // 칸이 이미 채워져 있는가?
         console.log('Not empty');
     } else {
+        //비어 있지 않을 경우 채워넣는 과정
         console.log('Empty');
-        tds[trNumber][tdNumber].textContent = turn;
+        //tds[trNumber][tdNumber].textContent = turn;
+        tds[trNumber][tdNumber].innerText = turn; // 여기가 적어주는 과정
         if (turn === 'X') {
             turn = 'O';
         } else {

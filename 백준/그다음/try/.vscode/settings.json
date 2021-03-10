@@ -1,8 +1,11 @@
 {
     "files.associations": {
+        "*.html": "html",
         "xlocale": "cpp",
         "xstring": "cpp",
         "xiosbase": "cpp",
-        "iostream": "cpp"
+        "iostream": "cpp",
+        "vector": "cpp",
+        "xutility": "cpp"
     }
 }

@@ -1,51 +1,60 @@
 #include <iostream>
-#include <string>
+#include <stack>
+#include<string>
+#include <list>
 using namespace std;
 
 int main()
 {
-    int n;
-    string g;
+    string word;
+    cin >> word;
+    stack<int>s;
     int i, j, k;
-    cin >> n;
-    int cnt1, cnt2;
-    int answer[1000000];
-    for (i = 0; i < n; i++)
+
+    for (i = 0; i < word.length(); i++)
     {
-        cnt1 = 0;
-        cnt2 = 0;
-        cin >> g;
-        for (j = 0; j < g.length(); j++)
+        s.push(word[i]);
+    }
+    int num;
+    cin >> num;
+    char order;
+    int plus;
+    list<int> temp;
+
+    for (i = 0; i < num; i++)
+    {
+        cin >> order;
+        if (order == 'L')
         {
-            if (g[j] == '(')
-            {
-                cnt1++;
-            }
-            else if (g[j] == ')')
-            {
-                cnt2++;
-            }
+            temp.push_back(s.top());
+            s.pop();
         }
-        if (cnt1 == cnt2)
+        else if (order == 'D')
         {
-            answer[i] = 1;
+            s.push(temp.front());
+            temp.pop_front();
         }
-        else
+        else if (order == 'B')
         {
-            answer[i] = 0;
+            s.pop();
+        }
+        else if (order == 'P')
+        {
+            cin >> plus;
+            s.push(plus);
         }
     }
 
-    for (i = 0; i < n; i++)
-    {
-        if (answer[i] == 1)
-        {
-            cout << "YES" << "\n";
-        }
-        else
-        {
-            cout << "NO" << "\n";
-        }
 
+    while (!temp.empty())
+    {
+        s.push(temp.front());
+        temp.pop_front();
+    }
+
+    while (!s.empty())
+    {
+        cout << s.top();
+        s.pop();
     }
 }

@@ -7,17 +7,17 @@
         table {
             border-collapse: collapse;
         }
-        
+
         td {
             padding: 5px 10px;
             text-align: center;
         }
-        
+
         input {
             text-align: right;
             border: none;
         }
-        
+
         input:focus {
             outline: none;
         }
@@ -91,7 +91,7 @@
                     <option value="none">=== 선택 ===</option>
                     <option value="korean">한국</option>
                     <option value="japan">일본</option>
-                    <option value="usa">미국</option>
+                    <option value="usa">미국</option>`
                     <option value="europe">유럽</option>
                     <option value="china">중국</option>
                 </select>
@@ -119,7 +119,8 @@
 
     <script>
         // get_rate("JPN") -> JPN_rate칸에 JPY 데이터가 잘 들어가게
-        function get_rate(nation) {
+        function get_rate(nation) 
+        {
             var rate = document.getElementById(nation + "_rate");
 
 
@@ -130,8 +131,10 @@
             var rt;
 
             // XMLHttpRequest 객체가 데이터 요청이 완료되면 어떤 동작을 할 것인지 정의
-            xhr.onload = function() {
-                if (this.status === 200) { // http status가 200 = 정상인것
+            xhr.onload = function () 
+            {
+                if (this.status === 200) 
+                { // http status가 200 = 정상인것
                     //rt = this.responseText;
                     rt = JSON.parse(this.responseText);
                     if (nation == "JPY")
@@ -156,7 +159,8 @@
         var nations = ["JPY", "USD", "EUR", "CNY"];
 
 
-        for (i = 0; i < 4; i++) {
+        for (i = 0; i < 4; i++) 
+        {
             get_rate(nations[i]);
         }
     </script>

@@ -1,0 +1,19 @@
+table {
+    border-collapse: collapse;
+    width: 600px;
+}
+
+td {
+    padding: 5px 10px;
+    width: 150px;
+    height: 20px;
+    text-align: center;
+}
+
+input {
+    text-align: right;
+}
+
+input:focus {
+    outline: none;
+}

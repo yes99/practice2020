@@ -85,8 +85,8 @@ void kmpmove(string text, string pattern, int fail[])
         if (cnt == pattern.length()+1)
         {
             printf("\nfind at %d\n", i);
-            //move = cnt - fail[cnt-1];
-            //i = i + move-1;
+            move = cnt - fail[cnt-1];
+            i = i + move-2;
         }
         else
         {
@@ -233,11 +233,12 @@ void calbm(string t, string p, int mj[])
         if (cnt == p.length())
         {
             printf("\nfind at %d\n", i);
+            i = i + mj[m-j]-1;
         }
         else
         {
             //핵심구간
-            i = i + mj[m-j] - (m-(m-j)) -1;
+            i = i + mj[1] - (m-(1)) -1;
         }    
     }
 }
@@ -247,8 +248,8 @@ void calbm(string t, string p, int mj[])
 
 int main()
 {
-    string text = "abababababababababab";//"abcbcabbabababcaabbcceabedabcabcab";
-    string badcode = "abab";//"edabcabcab";
+    string text = "gcatcgcagagagtataca";//"abababababababababab";//"abcbcabbabababcaabbcceabedabcabcab";
+    string badcode = "gcagagag";//"abab";//"edabcabcab";
     int lcode = 4;
     string codep[100];
     int lbadcode = badcode.length();

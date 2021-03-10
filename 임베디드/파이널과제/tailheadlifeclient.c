@@ -61,6 +61,7 @@ int DATA_SEND_RECV(int sock_flag)
         if (first == 0)
         {
             memset(buf, 0x00, MAX);
+            printf("first word : ");
             fgets(buf, MAX, stdin);
             write(sock_flag, buf, sizeof(buf));
             first++;

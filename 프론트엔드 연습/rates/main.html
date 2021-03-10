@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>환뉴우우우우우우울</title>
+    <link rel="stylesheet" type="text/css" href="test.css"/>
+</head>
+
+<body>
+    <table border="1">
+        <tr >
+            <td colspan="4">각 1 단위당 KRW</td>
+        </tr>
+        <tr>
+            <td>일</td>
+            <td>미</td>
+            <td>유</td>
+            <td>중</td>
+        </tr>
+        <tr>
+            <td id="JPY_rate"></td>
+            <td id="USD_rate"></td>
+            <td id="EUR_rate"></td>
+            <td id="CNY_rate"></td>
+        </tr>
+    </table>
+
+    <br>
+
+    <table border="1">
+        <tr>
+            <td colspan="3">단일환전</td>
+        </tr>
+        <tr>
+            <td>
+                <select id="singleFrom">
+                    <option value="KRW">한국(KRW)</option>
+                    <option value="JPY">일본(JPY)</option>
+                    <option value="USD">미국(USD)</option>
+                    <option value="EUR">유럽(EUR)</option>
+                    <option value="CNY">중국(CNY)</option>
+                </select>
+            </td>
+            <td>
+                <->
+            </td>
+            <td>
+                <select id="singleTo">
+                    <option value="KRW">한국(KRW)</option>
+                    <option value="JPY">일본(JPY)</option>
+                    <option value="USD">미국(USD)</option>
+                    <option value="EUR">유럽(EUR)</option>
+                    <option value="CNY">중국(CNY)</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input type="text" id="singleInput">
+            </td>
+            <td>
+                <button type="exch" onclick="singleCal()"> 환전 </button>
+
+            </td>
+            <td>
+                <input type="text" id="singleResult" disabled>
+            </td>
+        </tr>
+    </table>
+
+    <br>
+
+    <table border="1">
+        <tr></tr>
+        <td colspan="4">다중환전</td>
+        </tr>
+        <tr>
+            <td>
+                <select name="multiEx" id="multiExBox0" onchange="multiExChanged()">
+                    <option value="KRW">한국(KRW)</option>
+                    <option value="JPY">일본(JPY)</option>
+                    <option value="USD">미국(USD)</option>
+                    <option value="EUR">유럽(EUR)</option>
+                    <option value="CNY">중국(CNY)</option>
+                </select>
+            </td>
+            <td colspan="2">
+                <input type="text" id="multiInput">
+            </td>
+            <td>
+                <button type="cal" onclick="multiCal()"> 계산 </button>
+            </td>
+        </tr>
+        <tr>
+            <td id="multiExBox1">temp </td>
+            <td id="multiExBox2">temp </td>
+            <td id="multiExBox3">temp </td>
+            <td id="multiExBox4">temp </td>
+        </tr>
+        <tr>
+            <td id="multiExValue1">temp </td>
+            <td id="multiExValue2">temp </td>
+            <td id="multiExValue3">temp </td>
+            <td id="multiExValue4">temp </td>
+        </tr>
+    </table>
+
+    <script type="text/javascript" src="test.js"></script>
+
+</body>
+
+
+</html>

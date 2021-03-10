@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>환뉴우우우우우우울</title>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+        
+        td {
+            padding: 5px 10px;
+            text-align: center;
+        }
+        
+        input {
+            text-align: right;
+            border: none;
+        }
+        
+        input:focus {
+            outline: none;
+        }
+    </style>
+</head>
+
+<body>
+    <table border="1">
+        <tr>
+            <td>일</td>
+            <td>미</td>
+            <td>유</td>
+            <td>중</td>
+        </tr>
+        <tr>
+            <td id="JPY_rate"></td>
+            <td id="USD_rate"></td>
+            <td id="EUR_rate"></td>
+            <td id="CNY_rate"></td>
+        </tr>
+    </table>
+    <table border="1">
+        <tr>
+            <td colspan="3">단일환전</td>
+        </tr>
+        <tr>
+            <td>
+                <select name="singleEx">
+                    <option value="none">=== 선택 ===</option>
+                    <option value="korean">한국</option>
+                    <option value="japan">일본</option>
+                    <option value="usa">미국</option>
+                    <option value="europe">유럽</option>
+                    <option value="china">중국</option>
+                </select>
+            </td>
+            <td>
+                <->
+            </td>
+            <td>
+                <select name="singleEx">
+                    <option value="none">=== 선택 ===</option>
+                    <option value="korean">한국</option>
+                    <option value="japan">일본</option>
+                    <option value="usa">미국</option>
+                    <option value="europe">유럽</option>
+                    <option value="china">중국</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input type="text" id="input">
+            </td>
+            <td>
+                <button type="exch"> 환전 </button>
+
+            </td>
+            <td>
+                <input type="text" id="singleD">
+            </td>
+        </tr>
+    </table>
+    <table border="1">
+        <tr></tr>
+        <td colspan="4">다중환전</td>
+        </tr>
+        <tr>
+            <td>
+                <select name="multiEx">
+                    <option value="none">=== 선택 ===</option>
+                    <option value="korean">한국</option>
+                    <option value="japan">일본</option>
+                    <option value="usa">미국</option>
+                    <option value="europe">유럽</option>
+                    <option value="china">중국</option>
+                </select>
+            </td>
+            <td colspan="2">
+                <input type="text" id="multiD">
+            </td>
+            <td>
+                <button type="cal"> 계산 </button>
+            </td>
+        </tr>
+        <tr>
+            <td> temp </td>
+            <td>temp </td>
+            <td>temp </td>
+            <td>temp </td>
+        </tr>
+        <tr>
+            <td>temp </td>
+            <td>temp </td>
+            <td>temp </td>
+            <td>temp </td>
+        </tr>
+    </table>
+
+    <script>
+        // get_rate("JPN") -> JPN_rate칸에 JPY 데이터가 잘 들어가게
+        function get_rate(nation) {
+            var rate = document.getElementById(nation + "_rate");
+
+
+            // ajax로 환율데이터를 가져와서 숫자 갱신
+
+            var xhr = new XMLHttpRequest();
+
+            var rt;
+
+            // XMLHttpRequest 객체가 데이터 요청이 완료되면 어떤 동작을 할 것인지 정의
+            xhr.onload = function() {
+                if (this.status === 200) { // http status가 200 = 정상인것
+                    //rt = this.responseText;
+                    rt = JSON.parse(this.responseText);
+                    if (nation == "JPY")
+                        rate.innerText = rt.rates.KRW * 100; // 1 JPY = n (통화)
+                    else
+                        rate.innerText = rt.rates.KRW;
+                }
+            }
+
+            // 객체가 데이터 요청을 할 url 및 통신 방식 (GET, POST)
+            // xhr.open(통신방식, url, 비동기통신여부);
+            xhr.open("GET", "https://api.exchangeratesapi.io/latest?base=" + nation, true);
+
+            // GET은 url을 보는 것만으로 대부분의 의미를 파악할 수 있음.
+            // POST는 원하는 데이터를 http header라는 것에 담아서 보냄.
+            // GET이랑 POST가 있따. 왠만해서 GET을 써서 안 될 경우는 없다고 보면 된다.
+
+            // 준비된 객체가 데이터 요청을 수행하도록 함. (데이터 요청을 send하는 것)
+            xhr.send(null);
+        }
+
+        var nations = ["JPY", "USD", "EUR", "CNY"];
+
+
+        for (i = 0; i < 4; i++) {
+            get_rate(nations[i]);
+        }
+    </script>
+
+</body>
+
+</html>

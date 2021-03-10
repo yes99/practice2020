@@ -6,16 +6,11 @@ def rgb_to_ycrbr(image):
     img = (image.astype(float)/255)
     YCbCr_img = np.empty((img.shape[0], img.shape[1], 3), float)
     Y = np.empty([img.shape[0],img.shape[1]], dtype = float)
-    Cb = np.empty([img.shape[0],img.shape[1]], dtype = float)
-    Cr = np.empty([img.shape[0],img.shape[1]], dtype = float)
     for i in range(image.shape[0]):
         for j in range(image.shape[1]):
             Y[i,j] = (0.299)*(img[i,j][2]) + (0.587)*(img[i,j][1]) + (0.114)*(img[i,j][0])
-            Cb[i,j] = (-0.1687)*(img[i,j][2]) + (-0.3313)*(img[i,j][1]) + (0.5)*(img[i,j][0])
-            Cr[i,j] = (0.5)*(img[i,j][2]) + (-0.4187)*(img[i,j][1]) + (-0.0813)*(img[i,j][0])
+
     Y = histogram_equalize(Y*255)
-    YCbCr_img[...,0] = Cr*255
-    YCbCr_img[...,1] = Cb*255
     YCbCr_img[...,2] = Y
     return YCbCr_img
 

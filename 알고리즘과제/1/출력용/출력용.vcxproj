@@ -139,6 +139,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="bm.cpp" />
+    <ClCompile Include="final_출력.cpp" />
     <ClCompile Include="kmp.cpp" />
     <ClCompile Include="word.cpp" />
     <ClCompile Include="과제1출력.cpp" />

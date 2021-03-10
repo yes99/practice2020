@@ -9,7 +9,7 @@
 #define MAXLINE 100
 
 /* 한 줄 읽기 */
-void readLine(int fd, char *str)
+int readLine(int fd, char *str)
 {
     int n;
     do
@@ -45,7 +45,7 @@ int main()
         cfd = accept(sfd, &clientAddr, &clientlen);
         printf("연결요청 수락\n");
 
-        if (pid == 0)
+        if (fork() == 0)
         {
             readLine(cfd, inmsg);
             fp = fopen(inmsg, "r");
@@ -56,9 +56,9 @@ int main()
             else
             { /* 파일에서 한 줄씩 읽어 소켓을 통해 보낸다 */
                 printf("해당 파일 존재\n");
-                while (fgets(outmsg, MAXLINE, fp) != NULL)
+                while (fgets(inmsg, MAXLINE, fp) != NULL)
                 {
-                    write(cfd, outmsg, strlen(outmsg) + 1);
+                    write(cfd, inmsg, strlen(inmsg) + 1);
                 }
             }
             close(cfd);

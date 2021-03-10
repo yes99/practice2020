@@ -6,8 +6,19 @@
 #include <sys/un.h>
 #define DEFAULT_PROTOCOL 0
 #define MAXLINE 100
+/* 한 줄 읽기 */
+void readLine(int fd, char *str)
+{
+    int n;
+    do
+    {
+        n = read(fd, str, 1);
+    } while (n > 0 && *str++ != '\0');
+    return (n > 0);
+}
 
-/* 소문자-대문자 변환: 클라이언트 프로그램 */ int main()
+/* 소문자-대문자 변환: 클라이언트 프로그램 */ 
+int main()
 {
     int cfd, result;
     char inmsg[MAXLINE], outmsg[MAXLINE];
@@ -32,14 +43,4 @@
     printf("%s --> \n%s", inmsg, outmsg);
     close(cfd);
     exit(0);
-}
-/* 한 줄 읽기 */
-void readLine(int fd, char *str)
-{
-    int n;
-    do
-    {
-        n = read(fd, str, 1);
-    } while (n > 0 && *str++ != '\0');
-    return (n > 0);
 }

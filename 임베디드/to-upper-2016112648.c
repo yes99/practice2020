@@ -30,6 +30,7 @@ int main(int argc, char *argv[])
     }
 
     fp2 = fopen("result.txt", "w");
+    
     while ((c = fgetc(fp1)) != EOF)
         if(c>96 && c <123)
         {
