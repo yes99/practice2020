@@ -2,11 +2,11 @@
 
 import cv2, numpy as np
 
-img1 = cv2.imread('kk.jpg')
-img2 = cv2.imread('kkk.JPG')
+img1 = cv2.imread('b.jpg')
+img2 = cv2.imread('bb3.JPG')
 
-img1=cv2.resize(img1, dsize=(int(img1.shape[1]/2), int(img1.shape[0]/2)), interpolation=cv2.INTER_AREA)
-#img2=cv2.resize(img2, dsize=(int(img2.shape[1]/2), int(img2.shape[0]/2)), interpolation=cv2.INTER_AREA)
+#img1=cv2.resize(img1, dsize=(int(img1.shape[1]/2), int(img1.shape[0]/2)), interpolation=cv2.INTER_AREA)
+img2=cv2.resize(img2, dsize=(int(img2.shape[1]*2), int(img2.shape[0]*2)), interpolation=cv2.INTER_AREA)
 
 
 gray1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)

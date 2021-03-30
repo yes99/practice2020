@@ -2,11 +2,11 @@
 
 import cv2, numpy as np
 
-img1 = cv2.imread('kkk.jpg')
-img2 = cv2.imread('kkkt.jpg')
+img1 = cv2.imread('nw.jpg')
+img2 = cv2.imread('nwnw.jpg')
 
-img1=cv2.resize(img1, dsize=(int(img1.shape[1]*2), int(img1.shape[0]*2)), interpolation=cv2.INTER_AREA)
-img2=cv2.resize(img2, dsize=(int(img2.shape[1]*2), int(img2.shape[0]*2)), interpolation=cv2.INTER_AREA)
+img1=cv2.resize(img1, dsize=(int(img1.shape[1]/2), int(img1.shape[0]/2)), interpolation=cv2.INTER_AREA)
+#img2=cv2.resize(img2, dsize=(int(img2.shape[1]/2), int(img2.shape[0]/2)), interpolation=cv2.INTER_AREA)
 
 gray1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
 sobel1 = cv2.Sobel(gray1, cv2.CV_8U, 1, 0, 3)
@@ -52,12 +52,12 @@ cv2.waitKey()
 
 # ORB, BF-Hamming 로 knnMatch  ---①
 detector = cv2.xfeatures2d.SURF_create()
-kp1, desc1 = detector.detectAndCompute(canny1, None)
+kp1, desc1 = detector.detectAndCompute(sobel1, None)
 print("키포인트")
 print(kp1)
 print("디스크립터")
 print(desc1)
-kp2, desc2 = detector.detectAndCompute(canny2, None)
+kp2, desc2 = detector.detectAndCompute(sobel2, None)
 matcher = cv2.BFMatcher(cv2.NORM_L2, crossCheck=True)
 matches = matcher.match(desc1, desc2)
 
