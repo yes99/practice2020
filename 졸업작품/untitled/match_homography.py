@@ -2,8 +2,8 @@
 
 import cv2, numpy as np
 
-rimg1 = cv2.imread('kk.jpg')
-rimg2 = cv2.imread('kk1.jpg')
+rimg1 = cv2.imread('nn1.jpg')
+rimg2 = cv2.imread('nn2.jpg')
 
 
 img1=cv2.resize(rimg1, dsize=(int(rimg1.shape[1]/2), int(rimg1.shape[0]/2)), interpolation=cv2.INTER_AREA)
