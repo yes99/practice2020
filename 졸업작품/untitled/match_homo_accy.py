@@ -2,11 +2,11 @@
 
 import cv2, numpy as np
 
-img1 = cv2.imread('nw.jpg')
-img2 = cv2.imread('nwnw.jpg')
+img1 = cv2.imread('kw3.JPG')
+img2 = cv2.imread('kwkw.jpg')
 
-img1=cv2.resize(img1, dsize=(int(img1.shape[1]/2), int(img1.shape[0]/2)), interpolation=cv2.INTER_AREA)
-#img2=cv2.resize(img2, dsize=(int(img2.shape[1]/2), int(img2.shape[0]/2)), interpolation=cv2.INTER_AREA)
+img1=cv2.resize(img1, dsize=(int(img1.shape[1]/6), int(img1.shape[0]/6)), interpolation=cv2.INTER_AREA)
+#img2=cv2.resize(img2, dsize=(int(img2.shape[1]*2), int(img2.shape[0]*2)), interpolation=cv2.INTER_AREA)
 
 gray1 = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
 sobel1 = cv2.Sobel(gray1, cv2.CV_8U, 1, 0, 3)
@@ -51,25 +51,33 @@ cv2.waitKey()
 
 
 # ORB, BF-Hamming 로 knnMatch  ---①
+#detector = cv2.xfeatures2d.SURF_create(100,10,True,True)   #700개 까지는 멀쩡함, 800개 부터 엇나감 #300개 쓸만함
 detector = cv2.xfeatures2d.SURF_create()
-kp1, desc1 = detector.detectAndCompute(sobel1, None)
+
+#키포인트랑 디스크립터 한번에 계산해버림
+kp1, desc1 = detector.detectAndCompute(canny1, None)
 print("키포인트")
 print(kp1)
 print("디스크립터")
 print(desc1)
-kp2, desc2 = detector.detectAndCompute(sobel2, None)
+kp2, desc2 = detector.detectAndCompute(canny2, None)
+
+#매쳐는 BF매쳐 사용
 matcher = cv2.BFMatcher(cv2.NORM_L2, crossCheck=True)
 matches = matcher.match(desc1, desc2)
 
+
 # 매칭 결과를 거리기준 오름차순으로 정렬 ---③
 matches = sorted(matches, key=lambda x:x.distance)
+print(matches)
 # 모든 매칭점 그리기 ---④
 res1 = cv2.drawMatches(img1, kp1, img2, kp2, matches, None, \
-                    flags=cv2.DRAW_MATCHES_FLAGS_NOT_DRAW_SINGLE_POINTS)
+                    flags=cv2.DRAW_MATCHES_FLAGS_NOT_DRAW_SINGLE_POINTS) #한쪽만 있는 매칭 결과 그리기 제외
 
 # 매칭점으로 원근 변환 및 영역 표시 ---⑤
 src_pts = np.float32([ kp1[m.queryIdx].pt for m in matches ])
 dst_pts = np.float32([ kp2[m.trainIdx].pt for m in matches ])
+
 # RANSAC으로 변환 행렬 근사 계산 ---⑥
 mtrx, mask = cv2.findHomography(src_pts, dst_pts, cv2.RANSAC, 5.0)
 h,w = img1.shape[:2]
