@@ -82,6 +82,9 @@ dst_pts = np.float32([ kp2[m.trainIdx].pt for m in matches ])
 mtrx, mask = cv2.findHomography(src_pts, dst_pts, cv2.RANSAC, 5.0)
 h,w = img1.shape[:2]
 pts = np.float32([ [[0,0]],[[0,h-1]],[[w-1,h-1]],[[w-1,0]] ])
+print("이게 네모인가")
+print(pts)
+
 dst = cv2.perspectiveTransform(pts,mtrx)
 img2 = cv2.polylines(img2,[np.int32(dst)],True,255,3, cv2.LINE_AA)
 
