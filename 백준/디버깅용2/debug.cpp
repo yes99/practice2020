@@ -1,35 +1,41 @@
 #include <iostream>
-#include <algorithm>
+#include <vector>
 using namespace std;
 
-int main()
+const int MAX = 1000000;
+
+int minFactor[MAX];
+vector<int> prime; //소수
+//에라토스테네스의 체
+int main(void)
 {
-    int n;
-    cin >> n;
-
-    if (n == 0)
+    minFactor[0] = minFactor[1] = -1;
+    for (int i = 2; i < MAX; i++)
     {
-        cout << "0\n";
-        return 0;
+        minFactor[i] = i;
     }
 
-    string result;
-    while (n != 0)
+    for (int i = 2; i * i < MAX; i++)
     {
-        if (n % -2 == 0)
+        if (minFactor[i] == i)
         {
-            result += "0";
-            n /= -2;
+            for (int j = i * i; j < MAX; j += i)
+            {
+                if (minFactor[j] == j)
+                {
+                    minFactor[j] = i;
+                }
+            }
+
         }
-        else
+
+    }
+    //홀수인 소수를 저장
+    for (int i = 3; i < MAX; i++)
+    {
+        if (minFactor[i] == i)
         {
-            result += "1";
-            n = (n - 1) / -2;
+            prime.push_back(i);
         }
     }
-    reverse(result.begin(), result.end());
-
-    cout << result << '\n';
-
-    return 0;
 }

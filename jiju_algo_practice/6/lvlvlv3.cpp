@@ -6,11 +6,11 @@ int a, b, k, t, start, finish;
 int c[100001];
 int main() 
 {
-	//ifstream ii("D:\\input.txt");
-	ifstream ii("input.txt");
+	ifstream ii("D:\\input.txt");
+	//ifstream ii("input.txt");
 
-	//ofstream oo("D:\\output.txt");
-	ofstream oo("output.txt");
+	ofstream oo("D:\\output.txt");
+	//ofstream oo("output.txt");
 		k = 0;
 		memset(c, -1, sizeof(c));
 

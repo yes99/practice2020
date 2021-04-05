@@ -14,9 +14,7 @@ if cap.isOpened():                 # 캡쳐 객체 초기화 확인
         cv2.putText(img, cnt, (100, 100),  cv2.FONT_HERSHEY_DUPLEX, 3, (0, 0, 100), 10)
 
         if ret:                     # 프레임 읽기 정상
-
             cv2.imshow(video_file, img) # 화면에 표시  --- ③
-
             cv2.waitKey(25)            # 25ms 지연(40fps로 가정)   --- ④
         else:                       # 다음 프레임 읽을 수 없슴,
             break# 재생 완료

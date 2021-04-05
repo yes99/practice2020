@@ -92,7 +92,7 @@ def rgb_to_y(image):
 
 
 
-input_image = cv2.imread('dgu_night_color.png', cv2.IMREAD_COLOR)
+input_image = cv2.imread('car.png', cv2.IMREAD_COLOR)
 hisy = rgb_to_ycrbr1(input_image)
 #cv2.imwrite('HEQ_Y_dgu.png', ycrbr)
 oriy = originalY(input_image)
