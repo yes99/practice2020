@@ -11,6 +11,59 @@ R = 0
 x_copy, y_copy = -1, -1
 global numOfDot
 
+
+def scaling(cnt, numOfCurrent, count, xi , yi , x_copy, y_copy):
+    if cnt > 11:
+        diff=numOfCurrent-numOfDot
+        print(diff)
+        #현재특징점개수/이전특징점개수
+        # 현재특징점이 더 적을때->로고가 작아짐
+
+        if diff < -6:
+            plus = 0.5
+            div = 2
+            diff=abs(diff)
+            # round(diff/div+plus)
+            xi = xi + 2
+            yi = yi + 2
+
+            x_copy=x_copy-2
+            y_copy = y_copy - 2
+        #현재특징점이 더 많을때->로고가 커짐
+        elif diff > 6:
+            plus2 = 0.5
+            div2 = 2
+            diff = abs(diff)
+            xi = xi - 2
+            yi = yi - 2
+
+            x_copy = x_copy + 2
+            y_copy = y_copy + 2
+    
+def InPainting(frame, img2):
+    #원본 중 부분을 잘라서 저장
+    One_Bon= frame[int(yi):int(y_copy), int(xi):int(x_copy)]
+
+    #자른 이미지 그레이스케일
+    gray = cv2.cvtColor(One_Bon,cv2.COLOR_BGR2GRAY)
+
+    #이진화
+    E_Zin_Hwa = np.zeros_like(gray)
+    E_Zin_Hwa[gray > 127] = 255
+    #E_Zin_Hwa[gray <= 127] = 0
+    cv2.imshow('binary', E_Zin_Hwa)
+
+    #인페인팅 연산
+    inPainted = cv2.inpaint(One_Bon, E_Zin_Hwa, 10, cv2.INPAINT_TELEA)
+    cv2.imshow('inPainted', inPainted)
+
+    blurImg = inPainted
+    blurImg = cv2.blur(inPainted, (30, 30))
+    img2[int(yi):int(y_copy), int(xi):int(x_copy)] = blurImg
+    return img2
+
+
+
 def Optical_flow(frame):
     global xi, yi, x_copy, y_copy, numOfDot
 
@@ -65,42 +118,12 @@ def Optical_flow(frame):
     yi = yi + moveY
     y_copy = y_copy + moveY
 
-
-    if cnt > 11:
-        #ratio = numOfCurrent / numOfDot
-        diff=numOfCurrent-numOfDot
-        print(diff)
-        #현재특징점개수/이전특징점개수
-        # 현재특징점이 더 적을때->로고가 작아짐
-
-        if diff < -6:
-            plus = 0.5
-            div = 2
-            diff=abs(diff)
-            # round(diff/div+plus)
-            xi = xi + 2
-            yi = yi + 2
-
-            x_copy=x_copy-2
-            y_copy = y_copy - 2
-        #현재특징점이 더 많을때->로고가 커짐
-        elif diff > 6:
-            plus2 = 0.5
-            div2 = 2
-            diff = abs(diff)
-            xi = xi - 2
-            yi = yi - 2
-
-            x_copy = x_copy + 2
-            y_copy = y_copy + 2
-
+    scaling(cnt, numOfCurrent, count, xi , yi , x_copy, y_copy)
     if(cnt%10==0):
         numOfDot=count
 
         
     #print("moveX,moveY",moveX,moveY)
-    
-
     #print(xi,yi,x_copy,y_copy)
 
     try:
@@ -109,37 +132,8 @@ def Optical_flow(frame):
         pass
     cutimg = frame.copy()
     cv2.imwrite('query.jpg', cutimg)
-
-
-
-
-
-
-
-
-
 ###########################인페인팅##########################################3
-
-    #원본 중 부분을 잘라서 저장
-    One_Bon= frame[int(yi):int(y_copy), int(xi):int(x_copy)]
-
-    #자른 이미지 그레이스케일
-    gray = cv2.cvtColor(One_Bon,cv2.COLOR_BGR2GRAY)
-
-    #이진화
-    E_Zin_Hwa = np.zeros_like(gray)
-    E_Zin_Hwa[gray > 127] = 255
-    #E_Zin_Hwa[gray <= 127] = 0
-    cv2.imshow('binary', E_Zin_Hwa)
-
-    #인페인팅 연산
-    inPainted = cv2.inpaint(One_Bon, E_Zin_Hwa, 10, cv2.INPAINT_TELEA)
-    cv2.imshow('inPainted', inPainted)
-
-    blurImg = inPainted
-    blurImg = cv2.blur(inPainted, (30, 30))
-    img2[int(yi):int(y_copy), int(xi):int(x_copy)] = blurImg
-
+    InPainting(frame, img2)
     return img2
 
 
