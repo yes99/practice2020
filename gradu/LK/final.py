@@ -63,7 +63,6 @@ def Optical_flow(frame):
 
 
 
-    ssize=preMv.shape[0]
     moveX = int(sumX / countX)
     moveY = int(sumY / countY)
     xi = xi + moveX
@@ -73,7 +72,7 @@ def Optical_flow(frame):
     print("moveX",moveX)
     print("moveY",moveY)
 
-    #cv2.rectangle(img2, (xi, yi), (x_copy, y_copy), (B, G, R), 3)
+    cv2.rectangle(img2, (xi, yi), (x_copy, y_copy), (B, G, R), 3)
 
 
     try:
@@ -82,13 +81,16 @@ def Optical_flow(frame):
         pass
     cutimg = frame.copy()
     # cnt=0
+    
     cv2.imwrite('query.jpg', cutimg)
+    return img2
 
+"""
     blurImg = img2[int(yi):int(y_copy), int(xi):int(x_copy)]
     blurImg = cv2.blur(blurImg, (30, 30))
     img2[int(yi):int(y_copy), int(xi):int(x_copy)] = blurImg
+"""
 
-    return img2
 
 
 # 마우스 이벤트
@@ -123,7 +125,7 @@ def mouse_callback(event, x, y, flags, param):
 
 
 # __main__
-video_file = "dddd.mp4"
+video_file = "son.mp4"
 
 current_cnt = 0  # 현재 프레임 표시용 변수
 global cnt
