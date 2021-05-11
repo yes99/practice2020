@@ -99,8 +99,6 @@ def Optical_flow(frame):
 
         
     #print("moveX,moveY",moveX,moveY)
-    
-
     #print(xi,yi,x_copy,y_copy)
 
     try:

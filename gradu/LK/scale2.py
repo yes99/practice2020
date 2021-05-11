@@ -150,7 +150,7 @@ def onMouse(event, x, y, flags, frame):
 
 
 # __main__
-video_file = "ad.mp4"
+video_file = "rere.mp4"
 
 global cnt
 cnt = 0  # 프레임 번호

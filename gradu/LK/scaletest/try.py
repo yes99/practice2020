@@ -11,7 +11,7 @@ R = 0
 x_copy, y_copy = -1, -1
 global numOfDot
 
-video_file = "rerere.mp4"
+video_file = "ne.mp4"
 
 
 def Optical_flow(frame):
@@ -85,10 +85,15 @@ def Optical_flow(frame):
     print("size please : ", checksize)
 
     print(move)
+    var = np.var(move) # 분산
+    print("분산", var)
+
     scount = "CORNERS : %d" %(count)
-    slist = "%d %d %d %d" %(move[0],move[1],move[2],move[3])
+    slist = "%d %d %d %d %f" %(move[0],move[1],move[2],move[3], var)
+
     cv2.putText(frame, scount, (5, 20), cv2.FONT_HERSHEY_PLAIN, 1, (0, 255, 0))
-    cv2.putText(frame, slist, (5, 100), cv2.FONT_HERSHEY_PLAIN, 1, (0, 255, 0))
+    cv2.putText(frame, slist, (5, 100), cv2.FONT_HERSHEY_PLAIN, 1, (0, 255, 0) ,2)
+    
 
 
     moveX = round(sumX / count)
@@ -105,24 +110,23 @@ def Optical_flow(frame):
 
     cntdown = "query smaller, farfar "
     cntup = "query bigger, closer"
-    sscount = "FRAME%d"%(cnt)
-    cv2.imwrite('./im/'+sscount+'.PNG', img_draw)
+    
 
     #크기 조절 ㄱㄱ
-    """
-    if checksize > 0:
-        xi = xi + 2
-        yi = yi + 2
-        x_copy=x_copy-2
-        y_copy = y_copy - 2
-        cv2.putText(frame, cntdown, (10, 90), cv2.FONT_HERSHEY_PLAIN, 1, (255, 0, 0))
-    elif checksize < 0:
-        xi = xi - 2
-        yi = yi - 2
-        x_copy = x_copy + 2
-        y_copy = y_copy + 2
-        cv2.putText(frame, cntup, (10, 90), cv2.FONT_HERSHEY_PLAIN, 1, (255, 0, 0))
-    """
+    if var > 100:
+        if checksize > 0:
+            xi = xi + 2
+            yi = yi + 2
+            x_copy=x_copy-2
+            y_copy = y_copy - 2
+            cv2.putText(frame, cntdown, (10, 80), cv2.FONT_HERSHEY_PLAIN, 1, (255, 255, 255), 2)
+        elif checksize < 0:
+            xi = xi - 2
+            yi = yi - 2
+            x_copy = x_copy + 2
+            y_copy = y_copy + 2
+            cv2.putText(frame, cntup, (10, 80), cv2.FONT_HERSHEY_PLAIN, 1, (255, 255, 255),2 )
+    
     """
     if cnt > 11:
         diff=numOfCurrent-numOfDot   #현재점 - 이전점      
@@ -169,6 +173,9 @@ def Optical_flow(frame):
     print((xi+moveX, yi+moveY), (x_copy+moveX, y_copy+moveY), moveX, moveY )
     cv2.rectangle(img2, (xi+moveX, yi+moveY), (x_copy+moveX, y_copy+moveY), (B, G, R), 3)
 
+    
+    sscount = "FRAME%d"%(cnt)
+    cv2.imwrite('./im/'+sscount+'.PNG', img2)
     return img2
 
 
@@ -246,7 +253,9 @@ while cap.isOpened():  # 캡쳐 객체 초기화 확인
 
     elif key == 27:  # Esc:종료
         break
+    
     cv2.imshow('result', Optical_flow(frame))
+    
 
 cv2.destroyAllWindows()
 cap.release()

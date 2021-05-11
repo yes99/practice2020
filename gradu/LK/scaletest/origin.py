@@ -2,7 +2,7 @@
 
 import numpy as np, cv2
 
-cap = cv2.VideoCapture('rere.mp4')
+cap = cv2.VideoCapture('ne.mp4')
 fps = cap.get(cv2.CAP_PROP_FPS) # 프레임 수 구하기
 delay = int(1000/fps)
 # 추적 경로를 그리기 위한 랜덤 색상

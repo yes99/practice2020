@@ -167,7 +167,7 @@ def mouse_callback(event, x, y, flags, param):
     print("마우스 이벤트 발생, x:", x, "y:", y)
 
 #__main__
-video_file = "dddd.mp4"
+video_file = "rere.mp4"
 
 current_cnt = 0  # 현재 프레임 표시용 변수
 global cnt
