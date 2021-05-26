@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 import math
+import random
 
 black = (0,0,0)
 img = cv2.imread('circle.png', cv2.COLOR_BGR2GRAY)
@@ -81,5 +82,33 @@ y - 10
 print(np.argmax(y) // 4, np.argmax(y)%4)
 
 
+f = open("save.txt", 'w')
+
+# 파일로 저장하기 위한 배열을 생성합니다.
+numbers = np.zeros((10,4))
+for i in range(10):
+    for j in range(4):
+        numbers[i][j] = random.randint(1000,40000)
+# 숫자는 랜덤으로 나오기 때문에 출력할때마다 달라집니다.
+print(numbers)
+np.savetxt("save.txt", numbers, fmt='%d', delimiter=',')
+# 파일로 저장하기 위한 배열을 생성합니다.
+numbers1 = np.zeros((10,4))
+for i in range(10):
+    for j in range(4):
+        numbers1[i][j] = random.randint(1000,40000)
+# 숫자는 랜덤으로 나오기 때문에 출력할때마다 달라집니다.
+print(numbers1)
+
+np.savetxt("save1.txt", numbers1, fmt='%d', delimiter=',')
+
+# 파일로 저장하기 위한 배열을 생성합니다.
+numbers2 = np.zeros((10,4))
+for i in range(10):
+    for j in range(4):
+        numbers2[i][j] = random.randint(1000,40000)
+# 숫자는 랜덤으로 나오기 때문에 출력할때마다 달라집니다.
+print(numbers2)
+np.savetxt("save2.txt", numbers2, fmt='%d', delimiter=',')
 
 
