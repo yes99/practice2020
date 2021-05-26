@@ -123,8 +123,8 @@ def largesearch(y,x, center, h ):
 
 
 black = (0,0,0)
-img = cv2.imread( 'ms1.png', cv2.IMREAD_COLOR)
-draw = cv2.imread('ms1.png', cv2.IMREAD_COLOR)
+img = cv2.imread( 'test1.png', cv2.IMREAD_COLOR)
+draw = cv2.imread('test1.png', cv2.IMREAD_COLOR)
 originheight,originwidth,c = img.shape
 print(originheight,originwidth)
 

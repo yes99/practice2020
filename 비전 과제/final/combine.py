@@ -2,7 +2,8 @@ import cv2
 import numpy as np
 import math
 import time
-
+import datetime
+print(datetime.datetime.today())
 black = (0,0,0)
 blue = (255,0,0)
 
@@ -110,18 +111,17 @@ draw = cv2.imread('test1.png', cv2.IMREAD_COLOR)
 originheight,originwidth,c = img.shape #이미지 자체의 크기
 print(originheight,originwidth)
 
-img = cv2.resize(img, (originheight//3,originwidth//3)) 
-draw = cv2.resize(draw, (originheight//3,originwidth//3)) 
+img = cv2.resize(img,   (originwidth//4,originheight//4)) 
+draw = cv2.resize(draw, (originwidth//4,originheight//4)) 
 #img = cv2.resize(img, (432 ,248 )) 
 #draw = cv2.resize(draw, (432 ,248 )) 
+originheight,originwidth,c = img.shape #이미지 자체의 크기
+print(originheight,originwidth)
 
 (B, G, R) = cv2.split(draw)
 (dB, dG, dR) = cv2.split(draw)
 merged = cv2.merge([B, G, R])
-f = open("spacelog.txt", 'w')
-status = "height %d width %d channel %d\n" %(originheight,originwidth ,c )
 
-f.write(status)
 h = 10  ##   *********파라미터중 하나*************
 hr = 50
 #dB, dG, dR
@@ -140,7 +140,6 @@ height,width = dB.shape
 print("그리기용 크기 출력",q,w)
 status = "height %d width %d channel %d\n" %(height,width ,c )
 
-f.write(status)
 
 dR = np.zeros((q,w), dtype=np.uint8)
 dG = np.zeros((q,w), dtype=np.uint8)
@@ -311,9 +310,9 @@ print(h , w , c)
 print(h2 , w2 , c2)
 
 #작게 리사이즈 img ->img
-img = cv2.resize(img, (w//3 ,h//3 )) 
-img2 = cv2.resize(img2, (w//3 ,h//3)) 
-draw = cv2.resize(draw, (w//3 ,h//3))
+img = cv2.resize(img,   (w//4 ,h//4 )) 
+img2 = cv2.resize(img2, (w//4 ,h//4)) 
+draw = cv2.resize(draw, (w//4 ,h//4))
 
 
 #그레이로 바꿔줌 img->gray
@@ -410,7 +409,7 @@ for y in range(mwidth//2 ,h-(move-1)):     # 1~h까지 3*3이니까
             
             vu[0,0] = round(vu[0,0]) #v
             vu[1,0] = round(vu[1,0]) #u
-            vulist = [y, x, vu[0,0], vu[1,0]] 
+            vulist.append([y+10, x+10, vu[0,0], vu[1,0]]) 
             if(y % 5 == 0 and x %5 ==0):
                 #draw = cv2.line(draw, (x,y) , (x+round(vu[0,0]), y+round(vu[1,0])), black, 2)
                 draw = cv2.line(draw, (x,y) , (x+round(vu[1,0]), y+round(vu[0,0])), black, 2)
@@ -434,7 +433,7 @@ for y in range(mwidth//2 ,h-(move-1)):     # 1~h까지 3*3이니까
             vu = np.zeros((2,1), int)
             if(y % 5 == 0 and x %5 ==0):
                 draw = cv2.line(draw, (x,y) , (x+round(vu[0,0]), y+round(vu[1,0])), black, 2)
-            vulist = [y, x, 0, 0] 
+            vulist.append([y+10, x+10, 0, 0]) 
 
             #print(int (vu[1,0]), int (vu[1,0]))
             #vulist.append(vu.tolist())
@@ -445,17 +444,19 @@ for y in range(mwidth//2 ,h-(move-1)):     # 1~h까지 3*3이니까
             #print(vu)
         
         #print("cycle end")
-
+print
 print("정보수집 완료")
-
+print(vulist)
 for i in range(0, len(centerlist)):
     for j in range (0, len(vulist)):
-        if(centerlist[i][0] == vulist[j][0] and centerlist[i][1] == vulist[j][1]):
-            merged = cv2.line(merged, (vulist[j][1],vulist[j][0]) , ((vulist[j][1]+vulist[j][2]), (vulist[j][0]+vulist[j][3])), black, 2)
+        if centerlist[i] is not None:
+            if(centerlist[i][0] == vulist[j][0] and centerlist[i][1] == vulist[j][1]):
+                merged = cv2.line(merged, (vulist[j][1],vulist[j][0]) , ((vulist[j][1]+round(vulist[j][2])), (vulist[j][0]+round(vulist[j][3]))), blue, 2)
 
 
 
-
+cv2.imshow('final', merged)
+cv2.imwrite('finaldraw.png', merged)
 
 cv2.imshow('draw', draw)
 cv2.imshow('img', img)
