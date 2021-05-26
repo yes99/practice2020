@@ -105,13 +105,13 @@ def masking(img, width, pi , pj ):  #img  x*x , pi, pj
 """
 ########################################################################################################
 
-img = cv2.imread( 'ms1.png', cv2.IMREAD_COLOR)
-draw = cv2.imread('ms1.png', cv2.IMREAD_COLOR)
+img = cv2.imread( 'test1.png', cv2.IMREAD_COLOR)
+draw = cv2.imread('test1.png', cv2.IMREAD_COLOR)
 originheight,originwidth,c = img.shape #이미지 자체의 크기
 print(originheight,originwidth)
 
-#img = cv2.resize(img, (864 ,496 )) 
-#draw = cv2.resize(draw, (864 ,496 )) 
+img = cv2.resize(img, (originheight//3,originwidth//3)) 
+draw = cv2.resize(draw, (originheight//3,originwidth//3)) 
 #img = cv2.resize(img, (432 ,248 )) 
 #draw = cv2.resize(draw, (432 ,248 )) 
 
@@ -270,8 +270,6 @@ for i in range(0, originheight - patch):
             
 
 
-#np.savetxt("save.txt", pointcnt, fmt='%d', delimiter=',')
-
 merged = cv2.merge([dB, dG, dR])
 
 cv2.imshow('img', draw)
@@ -282,7 +280,20 @@ print(centerlist)
 print(len(centerlist))
 
 
+
+
+
+
+
+
+
+print("**********민시프트 완료************************")
 #######################################################여기까지가 민시프트
+
+
+
+
+
 
 #읽어오자   img 
 #img = cv2.imread('test1.png', cv2.COLOR_BGR2GRAY)
@@ -300,12 +311,9 @@ print(h , w , c)
 print(h2 , w2 , c2)
 
 #작게 리사이즈 img ->img
-#img = cv2.resize(img, (w//2 ,h//2 )) 
-#img2 = cv2.resize(img2, (w//2 ,h//2)) 
-#draw = cv2.resize(draw, (w//2 ,h//2))
-#img = cv2.resize(img, (43 ,24 )) 
-#img2 = cv2.resize(img2, (43 ,24)) 
-#draw = cv2.resize(draw, (43 ,24))
+img = cv2.resize(img, (w//3 ,h//3 )) 
+img2 = cv2.resize(img2, (w//3 ,h//3)) 
+draw = cv2.resize(draw, (w//3 ,h//3))
 
 
 #그레이로 바꿔줌 img->gray
@@ -327,28 +335,6 @@ h2,w2,c2 = img2.shape
 
 #print("함수테스트")
 #masking(img, 5, 12,13)
-########################
-"""
-f = open("./a.txt", 'w')
-f0 = open("./a1.txt", 'w')
-
-f1 = open("./b.txt", 'w')
-f2 = open("./c.txt", 'w')
-
-for i in range(0,h+2):
-    for j in range(0, w+2):
-        data = "%03d "%Z[i][j]
-        f.write(data)
-        data = "%03d "%Z2[i][j]
-        f0.write(data)
-    enter = "\n"
-    f.write(enter)
-    f0.write(enter)
-f.close()
-"""
-########################
-
-
 
 #현재는 3*3 마스크로 해줄꺼다
 
@@ -392,16 +378,6 @@ for y in range(mwidth//2 ,h-(move-1)):     # 1~h까지 3*3이니까
         dx = arrx - arr
         dy = arry - arr
         dt = arrt -arr
-        '''
-        f2.write("%d %d\n"%(y,x))
-        f2.write("arr\n", arr)
-        f2.write("arrt\n", arrt)
-        f2.write("arrx\n", arrx)
-        f2.write("arry\n", arry)
-        f2.write("dx\n", dx)
-        f2.write("dy\n", dy)
-        f2.write("dt\n", dt)
-        '''
                    
         c = 0
         for i in range(mwidth):
@@ -434,6 +410,7 @@ for y in range(mwidth//2 ,h-(move-1)):     # 1~h까지 3*3이니까
             
             vu[0,0] = round(vu[0,0]) #v
             vu[1,0] = round(vu[1,0]) #u
+            vulist = [y, x, vu[0,0], vu[1,0]] 
             if(y % 5 == 0 and x %5 ==0):
                 #draw = cv2.line(draw, (x,y) , (x+round(vu[0,0]), y+round(vu[1,0])), black, 2)
                 draw = cv2.line(draw, (x,y) , (x+round(vu[1,0]), y+round(vu[0,0])), black, 2)
@@ -457,6 +434,8 @@ for y in range(mwidth//2 ,h-(move-1)):     # 1~h까지 3*3이니까
             vu = np.zeros((2,1), int)
             if(y % 5 == 0 and x %5 ==0):
                 draw = cv2.line(draw, (x,y) , (x+round(vu[0,0]), y+round(vu[1,0])), black, 2)
+            vulist = [y, x, 0, 0] 
+
             #print(int (vu[1,0]), int (vu[1,0]))
             #vulist.append(vu.tolist())
             #print("vu",vu)
@@ -469,29 +448,18 @@ for y in range(mwidth//2 ,h-(move-1)):     # 1~h까지 3*3이니까
 
 print("정보수집 완료")
 
+for i in range(0, len(centerlist)):
+    for j in range (0, len(vulist)):
+        if(centerlist[i][0] == vulist[j][0] and centerlist[i][1] == vulist[j][1]):
+            merged = cv2.line(merged, (vulist[j][1],vulist[j][0]) , ((vulist[j][1]+vulist[j][2]), (vulist[j][0]+vulist[j][3])), black, 2)
+
+
+
+
+
 cv2.imshow('draw', draw)
 cv2.imshow('img', img)
 cv2.imwrite('draw.png', draw)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 cv2.waitKey(0)
 cv2.destroyAllWindows()
