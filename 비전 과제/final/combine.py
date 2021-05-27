@@ -9,8 +9,6 @@ blue = (255,0,0)
 
 
 def euclidean_dist0(pointA, pointB):
-    if(len(pointA) != len(pointB)):
-        raise Exception("point dimensionality is not matched!")
     total = float(0)
     for dimension in range(0, len(pointA)):
         total += (pointA[dimension] - pointB[dimension])**2
@@ -19,8 +17,6 @@ def euclidean_dist0(pointA, pointB):
 
 
 def euc_d(pointA, pointB ,h):
-    if(len(pointA) != len(pointB)):
-        raise Exception("point dimensionality is not matched!")
     total = float(0)
     for dimension in range(0, len(pointA)):
         total += (pointA[dimension]/h - pointB[dimension]/h)**2
@@ -187,7 +183,7 @@ for i in range(h, originheight+h):
                 #pointcnt[ty][tx] +=1
                 i = origini
                 j = originj
-                pointtouv.append([i,j,ty,tx])
+                pointtouv.append([i,j,ty-h,tx-h])
                 repeatcnt = 0
                 dR[i][j] = tr
                 dG[i][j] = tg 
@@ -203,7 +199,7 @@ for i in range(h, originheight+h):
                 #f.write(log2)
                 pointcnt[ty-h][tx-h] +=1
                 #pointcnt[ty][tx] +=1
-                pointtouv.append([i,j,ty,tx])
+                pointtouv.append([i,j,ty-h,tx-h])
                 i = origini
                 j = originj
                 repeatcnt = 0
@@ -230,7 +226,7 @@ for i in range(h, originheight+h):
                     #pointcnt[ty][tx] +=1
                     i = origini
                     j = originj
-                    pointtouv.append([i,j,ty,tx])
+                    pointtouv.append([i,j,ty-h,tx-h])
                     repeatcnt = 0
                     dR[i][j] = tr
                     dG[i][j] = tg
@@ -244,7 +240,7 @@ for i in range(h, originheight+h):
 
 print(time.time() - time0)    # (현재 시간 - 코드 시작 시간) 출력
 
-print(ddraw)  #모든 ms들이 도달하는 좌표와 색들이 모여있는 3차원
+#print(ddraw)  #모든 ms들이 도달하는 좌표와 색들이 모여있는 3차원
 
 ##[y,x,r,g,b]
 
@@ -320,6 +316,10 @@ move = 1
 Z= np.pad(gray, pad_width=mwidth//2, mode='constant', constant_values=0)
 Z2= np.pad(gray2, pad_width=mwidth//2, mode='constant', constant_values=0)
 Zdraw= np.pad(draw, pad_width=mwidth//2, mode='constant', constant_values=0)
+# v u  저장하기 위한 배열
+varray = np.zeros((h,w), np.float32)
+uarray= np.zeros((h,w), np.float32)
+
 
 #다시 크기 정의해준다
 h,w,c = img.shape
@@ -403,23 +403,13 @@ for y in range(mwidth//2 ,h-(move-1)):     # 1~h까지 3*3이니까
             
             vu[0,0] = round(vu[0,0]) #v
             vu[1,0] = round(vu[1,0]) #u
+            varray[y -mwidth//2][x- mwidth//2]  = int(vu[0,0] )
+            uarray[y -mwidth//2][x- mwidth//2] = int(vu[1,0] )
             vulist.append([y+10, x+10, vu[0,0], vu[1,0]])#(내y좌표, 내 x좌표) , (v만큼 움직인 거리, u만큼 움직인 거리 )
             if(y % 5 == 0 and x %5 ==0):
                 #draw = cv2.line(draw, (x,y) , (x+round(vu[0,0]), y+round(vu[1,0])), black, 2)
                 draw = cv2.line(draw, (x,y) , (x+round(vu[1,0]), y+round(vu[0,0])), black, 2)
-            """
-            #print(vu)
-            if( round(vu[0,0]) !=0 or  round(vu[1,0]) != 0 ):
-                #if(round(vu[0,0]) <3 and round(vu[1,0]) <mwidth):
-                #print("그리기 시작")
-                #draw = cv2.line(draw, (x,y) , (x+round(vu[0,0]), y+round(vu[1,0])), black, 1)
-                #draw = cv2.circle(draw, (x,y), 1, black  )
-                #draw = cv2.circle(draw , ((x+(round(vu[1,0]))*5), y+(round(vu[0,0])*5)), 1, blue  )
-                #draw = cv2.arrowedLine(draw, (x,y) , (x+(round(vu[1,0])*5), y+(round(vu[0,0])*5)), black, 2)
-                #cv2.imwrite('./imim/%d.PNG'%cnt ,draw )               
-                vulist.append(vu.tolist())
-            #print(cnt)
-            """
+           
             cnt = cnt+1
            # print("1")
         
@@ -451,17 +441,22 @@ for i in range(0, len(centerlist)):
         sumu = 0
         cnt = 0
         if centerlist[i] is not None:
-            if(centerlist[i][0] == vulist[j][0] and centerlist[i][1] == vulist[j][1]):  #중심점 
+            if(centerlist[i][0] == vulist[j][0] and centerlist[i][1] == vulist[j][1]):  #텍스트에서 제일 큰애 좌표랑, vu리스트의 내 좌표랑 일치
+                print(centerlist[i])
                 for k in range(0, len(pointtouv)):
-                    if(pointtouv[k][2]== vulist[j][0]    and pointtouv[k][3]== vulist[j][1]):
-                        sumv = sumv + vulist[k][2]
-                        sumu = sumu + vulist[k][3]
+                    if(pointtouv[k][2]== vulist[j][0] and pointtouv[k][3]== vulist[j][1]):
+                        print("*", end='')
+                        sumv = sumv + varray[pointtouv[k][0]][pointtouv[k][1]]
+                        sumu = sumu + uarray[pointtouv[k][0]][pointtouv[k][1]]
                         cnt = cnt+1
+                print(sumv, sumu, cnt)
                 v = round(sumv/cnt)
                 u = round(sumu/cnt)
                 merged = cv2.line(merged, (vulist[j][1],vulist[j][0]) , ((vulist[j][1]+v), (vulist[j][0]+u)), blue, 2)
 
+#               merged = cv2.line(merged, (vulist[j][1],vulist[j][0]) , ((vulist[j][1]+round(vulist[j][2])), (vulist[j][0]+round(vulist[j][3]))), blue, 2)
 
+print(time.time() - time0)    # (현재 시간 - 코드 시작 시간) 출력
 
 
 cv2.imshow('final', merged)

@@ -301,9 +301,6 @@ print("**********민시프트 완료************************")
 
 
 #읽어오자   img 
-#img = cv2.imread('test1.png', cv2.COLOR_BGR2GRAY)
-#img2 = cv2.imread('test2.png', cv2.COLOR_BGR2GRAY)
-#draw = cv2.imread('test1.png', cv2.COLOR_BGR2GRAY)
 img = cv2.imread( 'test1.png', cv2.COLOR_BGR2GRAY)
 img2 = cv2.imread('test2.png', cv2.COLOR_BGR2GRAY)
 draw = cv2.imread('test1.png', cv2.COLOR_BGR2GRAY)
