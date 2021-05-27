@@ -103,12 +103,14 @@ move = 1
 ##   ******************************
 
 img = cv2.imread( 'test1.png', cv2.IMREAD_COLOR)
+img2 = cv2.imread('test2.png', cv2.COLOR_BGR2GRAY)
 draw = cv2.imread('test1.png', cv2.IMREAD_COLOR)
 originheight,originwidth,c = img.shape #이미지 자체의 크기
 print(originheight,originwidth)
 
-img = cv2.resize(img,   (originwidth//4,originheight//4)) 
-draw = cv2.resize(draw, (originwidth//4,originheight//4)) 
+img = cv2.resize(img,   (originwidth//5,originheight//5))
+img2 = cv2.resize(img2, (originwidth//5,originheight//5))
+draw = cv2.resize(draw, (originwidth//5,originheight//5)) 
 
 originheight,originwidth,c = img.shape #이미지 자체의 크기
 print(originheight,originwidth)
@@ -281,26 +283,6 @@ print("**********민시프트 완료************************")
 #######################################################여기까지가 민시프트
 
 
-
-
-
-
-#읽어오자   img 
-img = cv2.imread( 'test1.png', cv2.COLOR_BGR2GRAY)
-img2 = cv2.imread('test2.png', cv2.COLOR_BGR2GRAY)
-draw = cv2.imread('test1.png', cv2.COLOR_BGR2GRAY)
-h,w,c = img.shape
-h2,w2,c2 = img2.shape
-#읽어온 이미지 크기 확인
-print(h , w , c)
-print(h2 , w2 , c2)
-
-#작게 리사이즈 img ->img
-img = cv2.resize(img,   (w//4 ,h//4 )) 
-img2 = cv2.resize(img2, (w//4 ,h//4)) 
-draw = cv2.resize(draw, (w//4 ,h//4))
-
-
 #그레이로 바꿔줌 img->gray
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 gray2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
@@ -313,14 +295,9 @@ Z= np.pad(gray, pad_width=mwidth//2, mode='constant', constant_values=0)
 Z2= np.pad(gray2, pad_width=mwidth//2, mode='constant', constant_values=0)
 Zdraw= np.pad(draw, pad_width=mwidth//2, mode='constant', constant_values=0)
 # v u  저장하기 위한 배열
-varray = np.zeros((h,w), np.float32)
-uarray= np.zeros((h,w), np.float32)
-
-
-#다시 크기 정의해준다
-h,w,c = img.shape
-h2,w2,c2 = img2.shape
-
+varray = np.zeros((originheight+10, originwidth+10), np.float32)
+uarray= np.zeros((originheight+10, originwidth+10), np.float32)
+#originheight, originwidth
 
 #print("함수테스트")
 #masking(img, 5, 12,13)
@@ -358,8 +335,8 @@ vu = np.ones((2,1), np.float32)
 vulist = []
 cnt = 0
 
-for y in range(mwidth//2 ,h-(move-1)):     # 1~h까지 3*3이니까
-    for x in range(mwidth//2, w -(move-1)): # 1~w까지 3*3이니까
+for y in range(mwidth//2 ,originheight-(move-1)):     # 1~h까지 3*3이니까
+    for x in range(mwidth//2, originwidth -(move-1)): # 1~w까지 3*3이니까
         arr = masking(Z, mwidth, y,x)
         arrt  = masking(Z2, mwidth, y,x)
         arrx  = masking(Z, mwidth, y,x+move)
@@ -427,7 +404,7 @@ for y in range(mwidth//2 ,h-(move-1)):     # 1~h까지 3*3이니까
 
 
 print("정보수집 완료")
-#print(vulist)# vulist ([y+10, x+10, vu[0,0], vu[1,0]])#(내y좌표, 내 x좌표) , (v만큼 움직인 거리, u만큼 움직인 거리 )
+#print(vulist) # vulist ([y+10, x+10, vu[0,0], vu[1,0]])#(내y좌표, 내 x좌표) , (v만큼 움직인 거리, u만큼 움직인 거리 )
               # pointtouv ([i,j,ty,tx])                 #(내y좌표, 내 x좌표) , (y가 도달한 곳, x가 도달한 곳)
               # centerlist 에는 우리가 구한 포인트 점들중에서 값이 큰 값을 찾아내서 간추린다. 즉 무게 중심점이라는 이야기이다. 여기로 모이는 점들을 찾아야 한다. (도달한 y좌표, 도달한 x좌표)
 
