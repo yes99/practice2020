@@ -7,14 +7,19 @@ print(datetime.datetime.today())
 black = (0,0,0)
 blue = (255,0,0)
 
-
-def euclidean_dist0(pointA, pointB):
+# Meanshift 에서 쓰이는 함수
+# 실제 유클리드 거리. 
+# yt yi의 spacial한 거리와 rgb값들의 차이를 확인할때 쓴다
+def euclidean_dist0(pointA, pointB):         
     total = float(0)
     for dimension in range(0, len(pointA)):
         total += (pointA[dimension] - pointB[dimension])**2
     dist = math.sqrt(total)
     return dist
 
+# 유클리드 거리의 제곱 합
+# 가우시안 커널을 구할때 들어가는 -||x||^2 값을 넣기 위해서 썼다. 
+# h값도 파라미터로 받아서, 연산 중에 나눠서 제곱값을 구하게 했다.
 
 def euc_d(pointA, pointB ,h):
     total = float(0)
@@ -22,6 +27,10 @@ def euc_d(pointA, pointB ,h):
         total += (pointA[dimension]/h - pointB[dimension]/h)**2
     return total
 
+# 가우시안 커널을 구한다. 
+# 위에서 구한 유클리드 거리의 제곱을 그대로 여기에 넣는다. 
+# l2파라미터 값이 1을 넘어가면 범위에 없다고 가정하고 0을 넣는다. 
+#  -> spacial한 정보를 구할때는 그럴일이 없지만 RGB값을 구할때는 적절한 h값을 구해야한다.
 def gaussian_k(l2):
     e= math.pi
     #print ("l2는", l2)
@@ -29,17 +38,12 @@ def gaussian_k(l2):
         return e**(-l2)
     else:
         return 0
-
-def largesearch0(y,x, center, h, recnt ):
+# V1 찾아가는 과정
+# 전체 과정에서 mean shift를 해서 중심점이 몰리는 부분중에서 가장 수치가 높은 의미있는 점을 찾는다.  
+# recnt를 따로 세서, 만약 같은 자리에서 돌면 적절할때 리턴해주도록 한다.
+def largesearch0(y,x, center, h, recnt ): #y, x , 중심점을 기록한 array, 재귀 횟수
     ch ,cw = center.shape
-
-    #print("********현재 위치", y,x)
-    #print("배열 길이",ch, cw)
     c = np.zeros((h,h), dtype=np.uint8)
-    #if(y+h >ch or x+h > cw):
-        #print("펑, 리턴은", y,x)
-        #return y,x
-        #print("리턴함?")
     max = 0
     ti = -1
     tj = -1
@@ -50,29 +54,26 @@ def largesearch0(y,x, center, h, recnt ):
                 ti = i
                 tj = j
                 max = c[i][j]
-    #print("지금 돌고 있는 어레이")
-    #print(c)
-    #print("max : ", max)
-    #print("여기서 제일 큰 i j는 ",ti,tj)
 
     if(ti == 0 and tj ==0):
-        #print("리턴 좌표1= ",ti+y, tj+x)
         return [ti+y, tj+x]
-        #print("리턴함?")
     elif recnt ==0:
-        #print("리턴 좌표2= ",ti+y, tj+x)
         return [ti+y, tj+x]
-        #print("리턴함?")
     else:
-        #print("한번 더",ti+y,tj+x )
-        if(ti+y+h > ch or tj+x+h >cw):
-            #print("펑")
-            #print(ti+y, tj+x)
+        if(ti+y+h > ch or tj+x+h >cw):  #만약 지정된 array의 axis0 1 을 넘어가게 되면 그 자리에서 리턴한다.
             return [ti+y, tj+x]
         recnt = recnt -1
         largesearch0(ti+y,tj+x, center, h, recnt) 
 
 ########################################################################################################
+# optical flow에서 쓰이는 함수
+"""
+-1 -1   -1 0  1 1
+ 0 -1    x y  1 0
+ 1 -1    1 0  1 1
+
+"""
+# 위와 같은 패치를 만들수 있는 함수이다. width 파라미터로 크기 조절 가능하다
 def masking(img, width, pi , pj ):  #img  x*x , pi, pj 
     arr = np.ones((width,width),  np.float32)
     for i in range(-int(width/2), int(width/2)+1):
@@ -83,23 +84,20 @@ def masking(img, width, pi , pj ):  #img  x*x , pi, pj
             arr[int(width/2) + i][int(width/2) + j] = img[pi + i][pj + j] 
         #print("\n")
     return arr
-"""
--1 -1   -1 0  1 1
- 0 -1     x y  x+1 y+0
- 1 -1     1 0  1 1
 
-"""
 ########################################################################################################
 ##   *********파라미터*************
 ## Meanshift parameters
-h = 10  
-hr = 50
-spacial_euclid_threshold = 5
-rgb_euclid_threshold     = 5
-large_threshold          = 5
+h = 10   #h spacial -> 패치의 반지름이라고 보면 된다
+hr = 50  #h rgb -> rgb패치를 나누는 h역할을 한다.
+spacial_euclid_threshold = 5 # threshold, yt yi 거리를 잡아준다. 
+rgb_euclid_threshold     = 5 # threshold, yt yi 거리를 잡아준다.
+large_threshold          = 5 # threshold, yt yi 거리를 잡아준다.
+patch = 3                    #largesearch 에 쓰이는 패치 크기
 ## Optical Flow parameters
-mwidth = 3
-move = 1
+mwidth = 3                   # optical flow에서 쓸 패치의 변 길이
+move = 1                     # gradiant 움직인 길이
+sizedivide = 3
 ##   ******************************
 
 img = cv2.imread( 'test1.png', cv2.IMREAD_COLOR)
@@ -108,9 +106,10 @@ draw = cv2.imread('test1.png', cv2.IMREAD_COLOR)
 originheight,originwidth,c = img.shape #이미지 자체의 크기
 print(originheight,originwidth)
 
-img = cv2.resize(img,   (originwidth//5,originheight//5))
-img2 = cv2.resize(img2, (originwidth//5,originheight//5))
-draw = cv2.resize(draw, (originwidth//5,originheight//5)) 
+# 연산이 너무 오래 걸려서 나눴다...
+img = cv2.resize(img,   (originwidth//sizedivide,originheight//sizedivide))
+img2 = cv2.resize(img2, (originwidth//sizedivide,originheight//sizedivide))
+draw = cv2.resize(draw, (originwidth//sizedivide,originheight//sizedivide)) 
 
 originheight,originwidth,c = img.shape #이미지 자체의 크기
 print(originheight,originwidth)
@@ -122,25 +121,26 @@ merged = cv2.merge([B, G, R])
 R= np.pad(R, pad_width=h, mode='constant', constant_values=0)
 G= np.pad(G, pad_width=h, mode='constant', constant_values=0)
 B= np.pad(B, pad_width=h, mode='constant', constant_values=0)
-q,w = R.shape
-print("원본 크기 출력",q,w)
+padh, padw = R.shape
+print("원본 크기 출력",padh, padw)
 
-
+# 패딩
 dR= np.pad(dR, pad_width=h, mode='constant', constant_values=0)
 dG= np.pad(dG, pad_width=h, mode='constant', constant_values=0)
 dB= np.pad(dB, pad_width=h, mode='constant', constant_values=0)
-q,w = dR.shape
-height,width = dB.shape
-print("그리기용 크기 출력",q,w)
-status = "height %d width %d channel %d\n" %(height,width ,c )
+padh, padw = dR.shape
+print("그리기용 크기 출력", padh, padw)
 
+#패딩한것과 같은 크기의 array
+dR = np.zeros((padh, padw), dtype=np.uint8)
+dG = np.zeros((padh, padw), dtype=np.uint8)
+dB = np.zeros((padh, padw), dtype=np.uint8)
 
-dR = np.zeros((q,w), dtype=np.uint8)
-dG = np.zeros((q,w), dtype=np.uint8)
-dB = np.zeros((q,w), dtype=np.uint8)
-
-ddraw = np.zeros((originheight,originwidth,5), dtype=np.uint8)
+# array에 5*1 벡터들 모두 저장
+ddraw = np.zeros((originheight,originwidth,5), dtype=np.uint8)  
+# 해당좌표로 이동된 점의 갯수를 기록하는 array
 pointcnt = np.zeros((originheight+10,originwidth+10), dtype=np.uint8)
+#각각의 점이 어디로 마지막으로 meanshift되었는지 기록하는 리스트
 pointtouv = []
 ########################################################################
 
@@ -168,7 +168,6 @@ for i in range(h, originheight+h):
                     for z in range (-h, h+1):
                         #log4 = "[i+l, j+z]= [%d %d] ,[i,j]= [%d %d]\n" %(i+l, j+z, i,j)
                         #f.write(log4)
-                        #print("디버깅용 중심::  도는데 ::",i, j ,i+l, j+z)
                         ks = gaussian_k(  euc_d([i+l, j+z] ,[i,j] ,h)  )   #좌표에 대한 K 정보
                         #log4 = "rgb 값 비교 r:%d g:%d b:%d  - r:%d g:%d b:%d\n" %(R[i+l][j+z],G[i+l][j+z],B[i+l][j+z],R[i][j],G[i][j],B[i][j])
                         #f.write(log4)
@@ -227,7 +226,7 @@ for i in range(h, originheight+h):
                 repeatcnt = repeatcnt +1
                 #log3 = "*********************아직 더 i = %d j = %d r:%d g:%d b:%d \n" %(i,j,tr,tg,tb)
                 #f.write(log3)
-                if i+h >= height or j+h>=width:
+                if i+h >= padh or j+h>=padw:
                     pointcnt[ty-h][tx-h] +=1
                     i = origini
                     j = originj
@@ -247,9 +246,10 @@ print(time.time() - time0)    # (현재 시간 - 코드 시작 시간) 출력
 
 ##[y,x,r,g,b]
 
-centerlist = []  #모든 중심들이 모인 점
-patch = 3
-samplelist = []  ##리스트에 리스트를 너힉 위한 리스트
+# centerlist 에는 우리가 구한 포인트 점들중에서 값이 큰 값을 찾아내서 간추린다. 
+# meanshift 해서 큰 모든 중심들이 모인 점
+centerlist = []  
+samplelist = []  ##리스트에 리스트를 넣기 위한 리스트
 
 
 #우리가 구한 포인트 점들중에서 값이 큰 값을 찾아내서 간추린다.
@@ -268,9 +268,6 @@ cv2.imshow('img', draw)
 cv2.imwrite('img.png', draw)
 cv2.imshow('merged', merged)
 cv2.imwrite('drawimg.png', merged)
-print(centerlist)
-print(len(centerlist))
-#centerlist 에는 우리가 구한 포인트 점들중에서 값이 큰 값을 찾아내서 간추린다. 즉 무게 중심점이라는 이야기이다. 여기로 모이는 점들을 찾아야 한다. 
 
 
 
@@ -287,8 +284,6 @@ print("**********민시프트 완료************************")
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 gray2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
 
-mwidth = 3
-move = 1
 
 #패딩 한번 해준다 gray->Z
 Z= np.pad(gray, pad_width=mwidth//2, mode='constant', constant_values=0)
@@ -337,15 +332,18 @@ cnt = 0
 
 for y in range(mwidth//2 ,originheight-(move-1)):     # 1~h까지 3*3이니까
     for x in range(mwidth//2, originwidth -(move-1)): # 1~w까지 3*3이니까
+        # 위에서 구한 arr에 해당 이미지의 grayscale 값들을 넣어준다.
         arr = masking(Z, mwidth, y,x)
         arrt  = masking(Z2, mwidth, y,x)
         arrx  = masking(Z, mwidth, y,x+move)
         arry  = masking(Z, mwidth, y+move,x)
+        # 그래디언트
         dx = arrx - arr
         dy = arry - arr
         dt = arrt -arr
                    
         c = 0
+        # mwidth^2 *2 로 만드는 과정
         for i in range(mwidth):
             for j in range(mwidth):
                 A[c][0] = dx[i][j]
@@ -354,59 +352,37 @@ for y in range(mwidth//2 ,originheight-(move-1)):     # 1~h까지 3*3이니까
                 c = c+1
 
         #print("B\n",B)
-        At = At = np.transpose(A)
-        AtA = AtA = np.dot(At, A)
+        At = np.transpose(A)
+        AtA = np.dot(At, A)
 
-        #print("At\n",At)
-        #print("A\n",A)
-        #print("AtA\n",AtA)
-        if (AtA[0][0] * AtA[1][1]) - (AtA[1][0] * AtA[0][1]) != 0 :    #역함수는 만들수 있을까??
-            #print("통과")
+        #역함수는 만들수 있을지 판별
+        if (AtA[0][0] * AtA[1][1]) - (AtA[1][0] * AtA[0][1]) != 0 :    
             R = np.linalg.inv(AtA)
-           # print("R\n", R)
             As = np.dot(R, At)
-            #print("ATAR\n",As)
             vu = np.dot(As, B)
-            #print(vu[0][0], vu[1][0])
-            #print(vu)
-            #print(int (vu[1,0]), int (vu[1,0]))
-
-            #data = "%3f %3f\n"%(vu[0,0], vu[1,0])
-            #f1.write(data)
-            
             vu[0,0] = round(vu[0,0]) #v
             vu[1,0] = round(vu[1,0]) #u
             varray[y -mwidth//2][x- mwidth//2]  = int(vu[0,0] )
             uarray[y -mwidth//2][x- mwidth//2] = int(vu[1,0] )
-            vulist.append([y+10, x+10, vu[0,0], vu[1,0]])#(내y좌표, 내 x좌표) , (v만큼 움직인 거리, u만큼 움직인 거리 )
+            vulist.append([y+10, x+10, vu[0,0], vu[1,0]])#[(내y좌표, 내 x좌표) , (v만큼 움직인 거리, u만큼 움직인 거리 )]
             if(y % 5 == 0 and x %5 ==0):
-                #draw = cv2.line(draw, (x,y) , (x+round(vu[0,0]), y+round(vu[1,0])), black, 2)
                 draw = cv2.line(draw, (x,y) , (x+round(vu[1,0]), y+round(vu[0,0])), black, 2)
            
             cnt = cnt+1
-           # print("1")
-        
-        else:                                                            #역함수는 만들수가 없겠지
+           
+        else:             #역함수는 만들수 없다
             vu = np.zeros((2,1), int)
             if(y % 5 == 0 and x %5 ==0):
                 draw = cv2.line(draw, (x,y) , (x+round(vu[0,0]), y+round(vu[1,0])), black, 2)
             vulist.append([y+10, x+10, 0, 0]) 
-
-            #print(int (vu[1,0]), int (vu[1,0]))
-            #vulist.append(vu.tolist())
-            #print("vu",vu)
-            #print(cnt)
             cnt = cnt+1
-            #print("2")
-            #print(vu)
-        
-        #print("cycle end")
-
+            
 
 print("정보수집 완료")
-#print(vulist) # vulist ([y+10, x+10, vu[0,0], vu[1,0]])#(내y좌표, 내 x좌표) , (v만큼 움직인 거리, u만큼 움직인 거리 )
-              # pointtouv ([i,j,ty,tx])                 #(내y좌표, 내 x좌표) , (y가 도달한 곳, x가 도달한 곳)
-              # centerlist 에는 우리가 구한 포인트 점들중에서 값이 큰 값을 찾아내서 간추린다. 즉 무게 중심점이라는 이야기이다. 여기로 모이는 점들을 찾아야 한다. (도달한 y좌표, 도달한 x좌표)
+# vulist ([y+10, x+10, vu[0,0], vu[1,0]]) #(y좌표, 내 x좌표) , (v만큼 움직인 거리, u만큼 움직인 거리 )
+# pointtouv ([i,j,ty,tx])                 #(내y좌표, 내 x좌표) , (yt의 y좌표, yt의 x좌표)
+# centerlist 에는 우리가 구한 포인트 점들중에서 값이 큰 값을 찾아내서 간추린다. 
+# 즉 무게 중심점이라는 이야기이다. 여기로 모이는 점들을 찾아야한다. (yt의 y좌표, yt의 x좌표)
 
 for i in range(0, len(centerlist)):
     for j in range (0, len(vulist)):
@@ -414,9 +390,11 @@ for i in range(0, len(centerlist)):
         sumu = 0
         cnt = 0
         if centerlist[i] is not None:
-            if(centerlist[i][0] == vulist[j][0] and centerlist[i][1] == vulist[j][1]):  #텍스트에서 제일 큰애 좌표랑, vu리스트의 내 좌표랑 일치
+            #  centerlist에 저장된 yt와 vulist yt 좌표가 일치하는지 확인 
+            if(centerlist[i][0] == vulist[j][0] and centerlist[i][1] == vulist[j][1]): 
                 print(centerlist[i])
                 for k in range(0, len(pointtouv)):
+                    # yt좌표가 되기전의 원래 점의 y x 좌표들의 u v값을 모두 더하고 평균으로 나눈다.
                     if(pointtouv[k][2]== vulist[j][0] and pointtouv[k][3]== vulist[j][1]):
                         print("*", end='')
                         sumv = sumv + varray[pointtouv[k][0]][pointtouv[k][1]]
@@ -425,9 +403,8 @@ for i in range(0, len(centerlist)):
                 print(sumv, sumu, cnt)
                 v = round(sumv/cnt)
                 u = round(sumu/cnt)
+                # segment의 평균 이동점 그림에 그린다
                 merged = cv2.line(merged, (vulist[j][1],vulist[j][0]) , ((vulist[j][1]+v), (vulist[j][0]+u)), blue, 1)
-
-#               merged = cv2.line(merged, (vulist[j][1],vulist[j][0]) , ((vulist[j][1]+round(vulist[j][2])), (vulist[j][0]+round(vulist[j][3]))), blue, 2)
 
 print(time.time() - time0)    # (현재 시간 - 코드 시작 시간) 출력
 
