@@ -9,8 +9,6 @@ blue = (255,0,0)
 
 
 def euclidean_dist0(pointA, pointB):
-    if(len(pointA) != len(pointB)):
-        raise Exception("point dimensionality is not matched!")
     total = float(0)
     for dimension in range(0, len(pointA)):
         total += (pointA[dimension] - pointB[dimension])**2
@@ -19,23 +17,10 @@ def euclidean_dist0(pointA, pointB):
 
 
 def euc_d(pointA, pointB ,h):
-    if(len(pointA) != len(pointB)):
-        raise Exception("point dimensionality is not matched!")
     total = float(0)
     for dimension in range(0, len(pointA)):
         total += (pointA[dimension]/h - pointB[dimension]/h)**2
     return total
-
-
-def gaussian_k0 (x_point, y_point, h):  #x점(좌표 아님), y중심 점(좌표 아님), 커널의 크기
-    e= math.pi
-    l2 = abs((x_point - y_point)/h)
-    #print ("l2는", l2)
-    if (l2/h) <=1:
-        return e**(-l2)
-    else :
-        return 0
-
 
 def gaussian_k(l2):
     e= math.pi
@@ -105,14 +90,25 @@ def masking(img, width, pi , pj ):  #img  x*x , pi, pj
 
 """
 ########################################################################################################
+##   *********파라미터*************
+## Meanshift parameters
+h = 10  
+hr = 50
+spacial_euclid_threshold = 5
+rgb_euclid_threshold     = 5
+large_threshold          = 5
+## Optical Flow parameters
+mwidth = 3
+move = 1
+##   ******************************
 
 img = cv2.imread( 'test1.png', cv2.IMREAD_COLOR)
 draw = cv2.imread('test1.png', cv2.IMREAD_COLOR)
 originheight,originwidth,c = img.shape #이미지 자체의 크기
 print(originheight,originwidth)
 
-img = cv2.resize(img,   (originwidth//4,originheight//4)) 
-draw = cv2.resize(draw, (originwidth//4,originheight//4)) 
+img = cv2.resize(img,   (originwidth//3,originheight//3)) 
+draw = cv2.resize(draw, (originwidth//3,originheight//3)) 
 #img = cv2.resize(img, (432 ,248 )) 
 #draw = cv2.resize(draw, (432 ,248 )) 
 originheight,originwidth,c = img.shape #이미지 자체의 크기
@@ -121,14 +117,6 @@ print(originheight,originwidth)
 (B, G, R) = cv2.split(draw)
 (dB, dG, dR) = cv2.split(draw)
 merged = cv2.merge([B, G, R])
-##  *********파라미터*************
-h = 10  
-hr = 50
-yx_eucliddistance_threshold= 5
-rgb_eucliddistance_threshold=5
-large_threshold=5
-##  ******************************
-
 #dB, dG, dR
 R= np.pad(R, pad_width=h, mode='constant', constant_values=0)
 G= np.pad(G, pad_width=h, mode='constant', constant_values=0)
@@ -152,7 +140,7 @@ dB = np.zeros((q,w), dtype=np.uint8)
 
 ddraw = np.zeros((originheight,originwidth,5), dtype=np.uint8)
 pointcnt = np.zeros((originheight+10,originwidth+10), dtype=np.uint8)
-
+pointtouv = []
 ########################################################################
 
 
@@ -195,8 +183,7 @@ for i in range(h, originheight+h):
             tr = round(upr/down)
             tg = round(upg/down)
             tb = round(upb/down)
-            
-            if(euclidean_dist0([ty,tx], [i,j])< yx_eucliddistance_threshold and euclidean_dist0([tr,tg,tb],[R[i][j],G[i][j],B[i][j]])<rgb_eucliddistance_threshold):  ####이것들도 파라미터
+            if(euclidean_dist0([ty,tx], [i,j])<spacial_euclid_threshold  and euclidean_dist0([tr,tg,tb],[R[i][j],G[i][j],B[i][j]])<rgb_euclid_threshold):  
                 #log2 = "############################이동한 i = %d j = %d r:%d g:%d b:%d  결정\n\n" %(ty,tx,tr,tg,tb)
                 #f.write(log2) 
                 #print(ty, tx)
@@ -204,6 +191,7 @@ for i in range(h, originheight+h):
                 #pointcnt[ty][tx] +=1
                 i = origini
                 j = originj
+                pointtouv.append([i,j,ty-h,tx-h])
                 repeatcnt = 0
                 dR[i][j] = tr
                 dG[i][j] = tg 
@@ -219,7 +207,7 @@ for i in range(h, originheight+h):
                 #f.write(log2)
                 pointcnt[ty-h][tx-h] +=1
                 #pointcnt[ty][tx] +=1
-                
+                pointtouv.append([i,j,ty-h,tx-h])
                 i = origini
                 j = originj
                 repeatcnt = 0
@@ -246,6 +234,7 @@ for i in range(h, originheight+h):
                     #pointcnt[ty][tx] +=1
                     i = origini
                     j = originj
+                    pointtouv.append([i,j,ty-h,tx-h])
                     repeatcnt = 0
                     dR[i][j] = tr
                     dG[i][j] = tg
@@ -259,13 +248,16 @@ for i in range(h, originheight+h):
 
 print(time.time() - time0)    # (현재 시간 - 코드 시작 시간) 출력
 
-print(ddraw)  #모든 ms들이 도달하는 좌표와 색들이 모여있는 3차원
+#print(ddraw)  #모든 ms들이 도달하는 좌표와 색들이 모여있는 3차원
 
 ##[y,x,r,g,b]
 
 centerlist = []  #모든 중심들이 모인 점
 patch = 3
 samplelist = []  ##리스트에 리스트를 너힉 위한 리스트
+
+
+#우리가 구한 포인트 점들중에서 값이 큰 값을 찾아내서 간추린다.
 
 for i in range(0, originheight - patch):
     for j in range(0, originwidth - patch):
@@ -283,7 +275,7 @@ cv2.imshow('merged', merged)
 cv2.imwrite('drawimg.png', merged)
 print(centerlist)
 print(len(centerlist))
-
+#centerlist 에는 우리가 구한 포인트 점들중에서 값이 큰 값을 찾아내서 간추린다. 즉 무게 중심점이라는 이야기이다. 여기로 모이는 점들을 찾아야 한다. 
 
 
 
@@ -301,6 +293,9 @@ print("**********민시프트 완료************************")
 
 
 #읽어오자   img 
+#img = cv2.imread('test1.png', cv2.COLOR_BGR2GRAY)
+#img2 = cv2.imread('test2.png', cv2.COLOR_BGR2GRAY)
+#draw = cv2.imread('test1.png', cv2.COLOR_BGR2GRAY)
 img = cv2.imread( 'test1.png', cv2.COLOR_BGR2GRAY)
 img2 = cv2.imread('test2.png', cv2.COLOR_BGR2GRAY)
 draw = cv2.imread('test1.png', cv2.COLOR_BGR2GRAY)
@@ -313,23 +308,26 @@ print(h , w , c)
 print(h2 , w2 , c2)
 
 #작게 리사이즈 img ->img
-img = cv2.resize(img,   (w//4 ,h//4 )) 
-img2 = cv2.resize(img2, (w//4 ,h//4)) 
-draw = cv2.resize(draw, (w//4 ,h//4))
+img = cv2.resize(img,   (w//3 ,h//3 )) 
+img2 = cv2.resize(img2, (w//3 ,h//3)) 
+draw = cv2.resize(draw, (w//3 ,h//3))
 
 
 #그레이로 바꿔줌 img->gray
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 gray2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
-##  *********파라미터*************
+
 mwidth = 3
 move = 1
-##  ******************************
 
 #패딩 한번 해준다 gray->Z
 Z= np.pad(gray, pad_width=mwidth//2, mode='constant', constant_values=0)
 Z2= np.pad(gray2, pad_width=mwidth//2, mode='constant', constant_values=0)
 Zdraw= np.pad(draw, pad_width=mwidth//2, mode='constant', constant_values=0)
+# v u  저장하기 위한 배열
+varray = np.zeros((h,w), np.float32)
+uarray= np.zeros((h,w), np.float32)
+
 
 #다시 크기 정의해준다
 h,w,c = img.shape
@@ -413,23 +411,13 @@ for y in range(mwidth//2 ,h-(move-1)):     # 1~h까지 3*3이니까
             
             vu[0,0] = round(vu[0,0]) #v
             vu[1,0] = round(vu[1,0]) #u
-            vulist.append([y+10, x+10, vu[0,0], vu[1,0]]) 
+            varray[y -mwidth//2][x- mwidth//2]  = int(vu[0,0] )
+            uarray[y -mwidth//2][x- mwidth//2] = int(vu[1,0] )
+            vulist.append([y+10, x+10, vu[0,0], vu[1,0]])#(내y좌표, 내 x좌표) , (v만큼 움직인 거리, u만큼 움직인 거리 )
             if(y % 5 == 0 and x %5 ==0):
                 #draw = cv2.line(draw, (x,y) , (x+round(vu[0,0]), y+round(vu[1,0])), black, 2)
                 draw = cv2.line(draw, (x,y) , (x+round(vu[1,0]), y+round(vu[0,0])), black, 2)
-            """
-            #print(vu)
-            if( round(vu[0,0]) !=0 or  round(vu[1,0]) != 0 ):
-                #if(round(vu[0,0]) <3 and round(vu[1,0]) <mwidth):
-                #print("그리기 시작")
-                #draw = cv2.line(draw, (x,y) , (x+round(vu[0,0]), y+round(vu[1,0])), black, 1)
-                #draw = cv2.circle(draw, (x,y), 1, black  )
-                #draw = cv2.circle(draw , ((x+(round(vu[1,0]))*5), y+(round(vu[0,0])*5)), 1, blue  )
-                #draw = cv2.arrowedLine(draw, (x,y) , (x+(round(vu[1,0])*5), y+(round(vu[0,0])*5)), black, 2)
-                #cv2.imwrite('./imim/%d.PNG'%cnt ,draw )               
-                vulist.append(vu.tolist())
-            #print(cnt)
-            """
+           
             cnt = cnt+1
            # print("1")
         
@@ -448,15 +436,35 @@ for y in range(mwidth//2 ,h-(move-1)):     # 1~h까지 3*3이니까
             #print(vu)
         
         #print("cycle end")
-print
+
+
 print("정보수집 완료")
-print(vulist)
+print(vulist) # vulist ([y+10, x+10, vu[0,0], vu[1,0]])#(내y좌표, 내 x좌표) , (v만큼 움직인 거리, u만큼 움직인 거리 )
+              # pointtouv ([i,j,ty,tx])                 #(내y좌표, 내 x좌표) , (y가 도달한 곳, x가 도달한 곳)
+              # centerlist 에는 우리가 구한 포인트 점들중에서 값이 큰 값을 찾아내서 간추린다. 즉 무게 중심점이라는 이야기이다. 여기로 모이는 점들을 찾아야 한다. (도달한 y좌표, 도달한 x좌표)
+
 for i in range(0, len(centerlist)):
     for j in range (0, len(vulist)):
+        sumv = 0
+        sumu = 0
+        cnt = 0
         if centerlist[i] is not None:
-            if(centerlist[i][0] == vulist[j][0] and centerlist[i][1] == vulist[j][1]):
-                merged = cv2.line(merged, (vulist[j][1],vulist[j][0]) , ((vulist[j][1]+round(vulist[j][2])), (vulist[j][0]+round(vulist[j][3]))), blue, 2)
+            if(centerlist[i][0] == vulist[j][0] and centerlist[i][1] == vulist[j][1]):  #텍스트에서 제일 큰애 좌표랑, vu리스트의 내 좌표랑 일치
+                print(centerlist[i])
+                for k in range(0, len(pointtouv)):
+                    if(pointtouv[k][2]== vulist[j][0] and pointtouv[k][3]== vulist[j][1]):
+                        print("*", end='')
+                        sumv = sumv + varray[pointtouv[k][0]][pointtouv[k][1]]
+                        sumu = sumu + uarray[pointtouv[k][0]][pointtouv[k][1]]
+                        cnt = cnt+1
+                print(sumv, sumu, cnt)
+                v = round(sumv/cnt)
+                u = round(sumu/cnt)
+                merged = cv2.line(merged, (vulist[j][1],vulist[j][0]) , ((vulist[j][1]+v), (vulist[j][0]+u)), blue, 2)
 
+#               merged = cv2.line(merged, (vulist[j][1],vulist[j][0]) , ((vulist[j][1]+round(vulist[j][2])), (vulist[j][0]+round(vulist[j][3]))), blue, 2)
+
+print(time.time() - time0)    # (현재 시간 - 코드 시작 시간) 출력
 
 
 cv2.imshow('final', merged)

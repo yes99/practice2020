@@ -96,8 +96,8 @@ draw = cv2.imread('test1.png', cv2.IMREAD_COLOR)
 originheight,originwidth,c = img.shape #이미지 자체의 크기
 print(originheight,originwidth)
 
-img = cv2.resize(img,   (originwidth//4,originheight//4)) 
-draw = cv2.resize(draw, (originwidth//4,originheight//4)) 
+img = cv2.resize(img,   (originwidth//2,originheight//2)) 
+draw = cv2.resize(draw, (originwidth//2,originheight//2)) 
 #img = cv2.resize(img, (432 ,248 )) 
 #draw = cv2.resize(draw, (432 ,248 )) 
 originheight,originwidth,c = img.shape #이미지 자체의 크기
@@ -300,9 +300,9 @@ print(h , w , c)
 print(h2 , w2 , c2)
 
 #작게 리사이즈 img ->img
-img = cv2.resize(img,   (w//4 ,h//4 )) 
-img2 = cv2.resize(img2, (w//4 ,h//4)) 
-draw = cv2.resize(draw, (w//4 ,h//4))
+img = cv2.resize(img,   (w//2 ,h//2 )) 
+img2 = cv2.resize(img2, (w//2 ,h//2)) 
+draw = cv2.resize(draw, (w//2 ,h//2))
 
 
 #그레이로 바꿔줌 img->gray
