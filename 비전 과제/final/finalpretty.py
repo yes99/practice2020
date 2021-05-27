@@ -78,9 +78,6 @@ def masking(img, width, pi , pj ):  #img  x*x , pi, pj
     arr = np.ones((width,width),  np.float32)
     for i in range(-int(width/2), int(width/2)+1):
         for j in range(-int(width/2), int(width/2)+1):
-            #arr[i][j] = img[pi + i][pj + j]
-            #print(pi + i, pj + j, end="  ")
-            #print(int(width/2) + i, int(width/2) + j, end="  ")
             arr[int(width/2) + i][int(width/2) + j] = img[pi + i][pj + j] 
         #print("\n")
     return arr
@@ -97,7 +94,7 @@ patch = 3                    #largesearch 에 쓰이는 패치 크기
 ## Optical Flow parameters
 mwidth = 3                   # optical flow에서 쓸 패치의 변 길이
 move = 1                     # gradiant 움직인 길이
-sizedivide = 3
+sizedivide = 5
 ##   ******************************
 
 img = cv2.imread( 'test1.png', cv2.IMREAD_COLOR)
