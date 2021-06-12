@@ -415,15 +415,19 @@ class MyWindow(QDialog, form_class):
         countM=0
         cnt=0
         quitflag = 0
-        passflag = 0
+        passflag = 1
         print(save_file)
         cap = cv2.VideoCapture(video_file[0])
+        width =  int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+        height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        print(width, height)
         fps = cap.get(cv2.CAP_PROP_FPS)  # 프레임 수 구하기
         delay = int(1000 / fps)
         fourcc = cv2.VideoWriter_fourcc(*'XVID')
-        out = cv2.VideoWriter(save_file, fourcc, 20.0, (640, 480))
+        out = cv2.VideoWriter(save_file, fourcc, 20.0, (width, height))
         origincnt =0
         while cap.isOpened():  # 캡쳐 객체 초기화 확인
+
             ret, frame = cap.read()
             if not ret:
                 break
@@ -436,22 +440,18 @@ class MyWindow(QDialog, form_class):
             cv2.imwrite('./origin/'+originframe, frame)
             origincnt +=1
             key = cv2.waitKey(delay)
-            if cnt == 1 or key ==32 or cornerflag ==1:
+            if (cnt == 1 or key ==32 or cornerflag ==1) and passflag == 1:
+                print("지금 어디에요? while 전에 멈춤", cnt)
                 cornerflag = 0
                 countM= 0
                 squares = 0
                 cv2.namedWindow('image')
                 cv2.imshow('image', frame)
-                cv2.imwrite('frame.png', frame)
-                self.qPixmapFileVar = QPixmap()
-                self.qPixmapFileVar.load("frame.png")
-                self.qPixmapFileVar = self.qPixmapFileVar.scaledToWidth(600)
-                self.video_label.setPixmap(self.qPixmapFileVar)
+
                 cv2.setMouseCallback('image', onMouse, param=frame)
                 print("1 squares : ", squares)
                 
                 while True:
-
                     k = cv2.waitKey(delay) & 0xFF
                     # 비트연산자 & 로 둘다 1인것만 1 운영체제가 64비트라 이런 과정을 해줘야된대
                     if k == 27:
@@ -466,8 +466,9 @@ class MyWindow(QDialog, form_class):
                         squares = 0
                         cv2.setMouseCallback('image', onMouse, param=frame)
                         print("2 squares : ", squares)
-                    elif  k == 32: #k == ord('p'):
+                    elif  k == ord('p'):
                         passflag = 1
+                        print("지금 어디에요? 아래서", cnt)
                         print("p누름 %d " %passflag)
                         cv2.destroyAllWindows()
                         stopbegin = 1
@@ -506,16 +507,6 @@ class MyWindow(QDialog, form_class):
                 back = hold -5
                 print("되감기 테스트", hold, back,"########################################")
                 #while back > hold:   #오리진 프레임에서 어느정도 빼줌
-
-
-
-
-
-
-
-
-
-
             elif key == 27:  # Esc:종료
                 break
             print("while문 탈출")
@@ -525,6 +516,7 @@ class MyWindow(QDialog, form_class):
             print("squares : ",squares)
             if quitflag ==1:    # 좀더 부드럽게 종료하도록 설정함
                 break
+
             if  squares == 0:
                 print("박스 : 없음")
                 out.write(frame)
@@ -533,26 +525,23 @@ class MyWindow(QDialog, form_class):
                 self.qPixmapFileVar.load("frame.png")
                 self.qPixmapFileVar = self.qPixmapFileVar.scaledToWidth(600)
                 self.video_label.setPixmap(self.qPixmapFileVar)
-
-
             elif squares == 1:
                 print("박스 : 1")
                 newframe = Optical_flow(frame, cnt)
                 print("zero stop check",cornerflag)
-                cv2.imwrite('frame', frame)
+                cv2.imwrite('frame.png', newframe)
                 out.write(newframe)
                 self.qPixmapFileVar = QPixmap()
                 self.qPixmapFileVar.load("frame.png")
                 self.qPixmapFileVar = self.qPixmapFileVar.scaledToWidth(600)
                 self.video_label.setPixmap(self.qPixmapFileVar)
                 passflag = 0
-
             elif squares == 2:
                 print("박스 : 2")
                 newframe = Optical_flow2(frame, cnt)
                 print("zero stop check",cornerflag)
                 out.write(newframe)
-                cv2.imwrite('frame.png', frame)
+                cv2.imwrite('frame.png', newframe)
                 self.qPixmapFileVar = QPixmap()
                 self.qPixmapFileVar.load("frame.png")
                 self.qPixmapFileVar = self.qPixmapFileVar.scaledToWidth(600)

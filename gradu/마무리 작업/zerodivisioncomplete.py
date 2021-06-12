@@ -431,9 +431,10 @@ class MyWindow(QDialog, form_class):
             img_draw = frame.copy()
             print(cnt)
             originframe = "origin%d.png" %origincnt
+            print("지금 어디에요? while 전에 멈춤", cnt)
             #print(originframe)
             #print('./origin/'+originframe)
-            cv2.imwrite('./origin/'+originframe, frame)
+            #cv2.imwrite('./origin/'+originframe, frame)
             origincnt +=1
             key = cv2.waitKey(delay)
             if cnt == 1 or key ==32 or cornerflag ==1:
@@ -467,6 +468,7 @@ class MyWindow(QDialog, form_class):
                         cv2.setMouseCallback('image', onMouse, param=frame)
                         print("2 squares : ", squares)
                     elif  k == 32: #k == ord('p'):
+                        print("지금 어디에요? while 후에 멈춤", cnt)
                         passflag = 1
                         print("p누름 %d " %passflag)
                         cv2.destroyAllWindows()
@@ -484,6 +486,7 @@ class MyWindow(QDialog, form_class):
                                 os.remove("query.jpg")
                             except:
                                 pass
+                            
                             cutimg = img_draw.copy()
                             cv2.imwrite('query.jpg', cutimg)
                         elif squares == 2:
@@ -506,15 +509,6 @@ class MyWindow(QDialog, form_class):
                 back = hold -5
                 print("되감기 테스트", hold, back,"########################################")
                 #while back > hold:   #오리진 프레임에서 어느정도 빼줌
-
-
-
-
-
-
-
-
-
 
             elif key == 27:  # Esc:종료
                 break
@@ -539,7 +533,7 @@ class MyWindow(QDialog, form_class):
                 print("박스 : 1")
                 newframe = Optical_flow(frame, cnt)
                 print("zero stop check",cornerflag)
-                cv2.imwrite('frame', frame)
+                cv2.imwrite('frame.png', frame)
                 out.write(newframe)
                 self.qPixmapFileVar = QPixmap()
                 self.qPixmapFileVar.load("frame.png")
