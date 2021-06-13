@@ -436,23 +436,32 @@ class MyWindow(QDialog, form_class):
             #print('./origin/'+originframe)
             #cv2.imwrite('./origin/'+originframe, frame)
             origincnt +=1
+            print("zzzz1")
             key = cv2.waitKey(delay)
+            print("zzzz2")
             if cnt == 1 or key ==32 or cornerflag ==1:
+                print("zzzz3")
                 cornerflag = 0
                 countM= 0
                 squares = 0
+                print("zzzz4")
                 cv2.namedWindow('image')
                 cv2.imshow('image', frame)
                 cv2.imwrite('frame.png', frame)
+                print("zzzz5")
+
                 self.qPixmapFileVar = QPixmap()
                 self.qPixmapFileVar.load("frame.png")
                 self.qPixmapFileVar = self.qPixmapFileVar.scaledToWidth(600)
                 self.video_label.setPixmap(self.qPixmapFileVar)
+                print("zzzz6")
+
                 cv2.setMouseCallback('image', onMouse, param=frame)
+                print("zzzz7")
                 print("1 squares : ", squares)
                 
                 while True:
-
+                    print("zzzz8")
                     k = cv2.waitKey(delay) & 0xFF
                     # 비트연산자 & 로 둘다 1인것만 1 운영체제가 64비트라 이런 과정을 해줘야된대
                     if k == 27:
@@ -504,6 +513,9 @@ class MyWindow(QDialog, form_class):
                         countM=0
                         print("3 squares : ", squares)
                         break
+
+                
+
             elif key == ord('a'):
                 hold = origincnt
                 back = hold -5
@@ -515,7 +527,7 @@ class MyWindow(QDialog, form_class):
             print("while문 탈출")
             print("stopbegin", stopbegin)
 
-
+            print("내가 누른것은 대체 어디 갔는가", k)
             print("squares : ",squares)
             if quitflag ==1:    # 좀더 부드럽게 종료하도록 설정함
                 break

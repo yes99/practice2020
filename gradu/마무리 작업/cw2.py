@@ -3,6 +3,7 @@ import numpy as np
 import os
 import threading
 import sys
+import shutil
 from PyQt5 import QtWidgets
 from PyQt5 import QtGui
 from PyQt5 import QtCore
@@ -392,7 +393,7 @@ class MyWindow(QDialog, form_class):
         countM = 0
         cnt = 0
         quitflag = 0
-        passflag = 0
+        rewindstop = 0
         print(save_file)
         cap = cv2.VideoCapture(video_file[0])
         width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
@@ -450,15 +451,12 @@ class MyWindow(QDialog, form_class):
                         cv2.setMouseCallback('image', onMouse, param=frame)
                         print("2 squares : ", squares)
                     elif k == 32:
-                        passflag = 1
                         print("지금 어디에요? 아래서", cnt)
-                        print("p누름 %d " % passflag)
                         stopbegin = 1
                         break
                     elif k == ord('s'):
                         cv2.destroyAllWindows()
                         stopbegin = 0
-                        passflag = 0
                         # query 저장
                         global cutimg
                         global cutimg2
@@ -484,16 +482,24 @@ class MyWindow(QDialog, form_class):
                         countM = 0
                         print("3 squares : ", squares)
                         break
-
-
+##########################################################################
             elif key == ord('a'):
                 squares = 0
                 hold = origincnt
                 back = hold - 10
-                print("되감기 테스트", hold, back, "########################################")
+                print("되감기 테스트", hold, back, "########################################################################################")
                 self.BackStatus.setText("back....")
+                self.BackStatus.repaint()
                 backframenum = "./origin/origin%d.png" %back
-                backframe = cv2.imread(backframenum)
+                backframe = cv2.imread(backframenum)  # 되감기 한 프레임 이미지
+                cv2.namedWindow('image')
+                cv2.imshow('image', backframe) 
+                cv2.imwrite('frame.png', backframe)
+                cv2.setMouseCallback('image', onMouse, param=backframe)
+                print("지금 어디에요? 리와인드 while 전에 멈춤")
+                cornerflag = 0
+                countM = 0
+                squares = 0
                 cv2.namedWindow('image')
                 cv2.imshow('image', backframe)
                 cv2.imwrite('frame.png', backframe)
@@ -501,25 +507,27 @@ class MyWindow(QDialog, form_class):
                 self.qPixmapFileVar.load("frame.png")
                 self.qPixmapFileVar = self.qPixmapFileVar.scaledToWidth(600)
                 self.video_label.setPixmap(self.qPixmapFileVar)
+                self.video_label.repaint()
                 cv2.setMouseCallback('image', onMouse, param=frame)
                 print("1 squares : ", squares)
                 while back < hold:   #오리진 프레임에서 어느정도 빼줌 
-                    print("while문 안입니다 되감기")
+                    self.currentcnt.setText("%d" %back)
+                    self.currentcnt.repaint()
+                    self.BackStatus.setText("back....")
+                    self.BackStatus.repaint()
                     backframenum = "./origin/origin%d.png" %back
-                    backframe = cv2.imread(backframenum)
-                    cv2.imwrite('frame.png', backframe)
-                    self.qPixmapFileVar = QPixmap()
-                    self.qPixmapFileVar.load("frame.png")
-                    self.qPixmapFileVar = self.qPixmapFileVar.scaledToWidth(600)
-                    self.video_label.setPixmap(self.qPixmapFileVar)
+                    print("지금 바꾸고 있는 원문", backframenum)
+                    backframe = cv2.imread(backframenum)   
+                    rewindk = cv2.waitKey(delay) & 0xFF
+                    # 비트연산자 & 로 둘다 1인것만 1 운영체제가 64비트라 이런 과정을 해줘야된대
                     while True:
-                        k = cv2.waitKey(delay) & 0xFF
-                        # 비트연산자 & 로 둘다 1인것만 1 운영체제가 64비트라 이런 과정을 해줘야된대
-                        if k == 27:
+                        print("#", end='')
+                        rewindk = cv2.waitKey(delay) & 0xFF
+                        if rewindk == 27:
                             quitflag = 1
                             break
                         # 다시 영역지정
-                        elif k == ord('r'):
+                        elif rewindk == ord('r'):
                             frame = img_draw.copy()
                             cv2.destroyAllWindows()
                             cv2.imshow('image', backframe)
@@ -527,18 +535,14 @@ class MyWindow(QDialog, form_class):
                             squares = 0
                             cv2.setMouseCallback('image', onMouse, param=backframe)
                             print("2 squares : ", squares)
-                        elif k == 32:
-                            passflag = 1
+                        elif rewindk == 32:
                             print("지금 어디에요? 아래서", cnt)
-                            print("p누름 %d " % passflag)
                             stopbegin = 1
                             break
-                        elif k == ord('s'):
+                        elif rewindk == ord('s'):
                             cv2.destroyAllWindows()
                             stopbegin = 0
-                            passflag = 0
-                            # query 저장
-
+                            # query 저장   
                             if squares == 1:
                                 try:
                                     os.remove("query.jpg")
@@ -560,58 +564,57 @@ class MyWindow(QDialog, form_class):
                                 cv2.imwrite('query2.jpg', cutimg)
                             countM = 0
                             print("3 squares : ", squares)
-                            break
-
-                    if squares == 0:
-                        print("박스 : 없음")
-                        convertframe = "convert%d.png" % back
-                        cv2.imwrite('./convert/'+convertframe, backframe)
-                        cv2.imwrite('frame.png', backframe)
-                        self.qPixmapFileVar = QPixmap()
-                        self.qPixmapFileVar.load("frame.png")
-                        self.qPixmapFileVar = self.qPixmapFileVar.scaledToWidth(600)
-                        self.video_label.setPixmap(self.qPixmapFileVar)
-                        back +=1
-
-                    elif squares == 1:
-                        print("박스 : 1")
-                        newframe = Optical_flow(frame, cnt)
-                        print("zero stop check", cornerflag)
-                        cv2.imwrite('frame.png', backframe)
-                        convertframe = "convert%d.png" % back
-                        cv2.imwrite('./convert/'+convertframe, backframe)
-                        self.qPixmapFileVar = QPixmap()
-                        self.qPixmapFileVar.load("frame.png")
-                        self.qPixmapFileVar = self.qPixmapFileVar.scaledToWidth(600)
-                        self.video_label.setPixmap(self.qPixmapFileVar)
-                        back +=1
-
-                    elif squares == 2:
-                        print("박스 : 2")
-                        newframe = Optical_flow2(frame, cnt)
-                        print("zero stop check", cornerflag)
-                        convertframe = "convert%d.png" % back
-                        cv2.imwrite('./convert/'+convertframe, backframe)
-                        cv2.imwrite('frame.png', backframe)
-                        self.qPixmapFileVar = QPixmap()
-                        self.qPixmapFileVar.load("frame.png")
-                        self.qPixmapFileVar = self.qPixmapFileVar.scaledToWidth(600)
-                        self.video_label.setPixmap(self.qPixmapFileVar)
-                        back +=1
-
-                    print("프레임 출력 완료")
+                            break  
                     
-                
+                    cv2.imwrite('frame.png', backframe)
+                    back = back +1
+                    if squares == 0:
+                        print("박스 : 없음 ---- 리와인드 안 작동")
+                        convertframe = "convert%d.png" % convertcnt
+                        cv2.imwrite('./convert/'+convertframe, backframe)
+                        convertcnt += 1
+                        cv2.imwrite('frame.png', backframe)
+                        self.qPixmapFileVar = QPixmap()
+                        self.qPixmapFileVar.load("frame.png")
+                        self.qPixmapFileVar = self.qPixmapFileVar.scaledToWidth(600)
+                        self.video_label.setPixmap(self.qPixmapFileVar)
+                        self.video_label.repaint() 
+                    elif squares == 1:
+                        print("박스 : 1---- 리와인드 안 작동")
+                        newframe = Optical_flow(backframe, back)
+                        print("zero stop check", cornerflag)
+                        cv2.imwrite('frame.png', newframe)
+                        convertframe = "convert%d.png" % convertcnt   #이건 string
+                        cv2.imwrite('./convert/'+convertframe, newframe) 
+                        convertcnt += 1
+                        self.qPixmapFileVar = QPixmap()
+                        self.qPixmapFileVar.load("frame.png")
+                        self.qPixmapFileVar = self.qPixmapFileVar.scaledToWidth(600)
+                        self.video_label.setPixmap(self.qPixmapFileVar)
+                        self.video_label.repaint()
+                    elif squares == 2:
+                        print("박스 : 2---- 리와인드 안 작동")
+                        newframe = Optical_flow2(backframe, back)
+                        print("zero stop check", cornerflag)
+                        convertframe = "convert%d.png" % convertcnt
+                        cv2.imwrite('./convert/'+convertframe, newframe)
+                        convertcnt += 1
+                        cv2.imwrite('frame.png', newframe)
+                        self.qPixmapFileVar = QPixmap()
+                        self.qPixmapFileVar.load("frame.png")
+                        self.qPixmapFileVar = self.qPixmapFileVar.scaledToWidth(600)
+                        self.video_label.setPixmap(self.qPixmapFileVar)
+                        self.video_label.repaint()
+                    print("프레임 하나 출력 완료")
+
+                print("프레임 출력 완료")
                 self.BackStatus.setText("default")
 
 
             elif key == 27:  # Esc:종료
                 break
             print("while문 탈출")
-            print("stopbegin", stopbegin)
-
             print("squares : ", squares)
-            
             if quitflag == 1:  # 좀더 부드럽게 종료하도록 설정함
                 break
             if squares == 0:
@@ -630,41 +633,39 @@ class MyWindow(QDialog, form_class):
                 print("박스 : 1")
                 newframe = Optical_flow(frame, cnt)
                 print("zero stop check", cornerflag)
-                cv2.imwrite('frame.png', frame)
-                convertframe = "convert%d.png" % convertcnt
-                cv2.imwrite('./convert/'+convertframe, frame)
+                cv2.imwrite('frame.png', newframe)
+                convertframe = "convert%d.png" % convertcnt   #이건 string
+                cv2.imwrite('./convert/'+convertframe, newframe) 
                 convertcnt += 1
                 self.qPixmapFileVar = QPixmap()
                 self.qPixmapFileVar.load("frame.png")
                 self.qPixmapFileVar = self.qPixmapFileVar.scaledToWidth(600)
                 self.video_label.setPixmap(self.qPixmapFileVar)
-                passflag = 0
 
             elif squares == 2:
                 print("박스 : 2")
                 newframe = Optical_flow2(frame, cnt)
                 print("zero stop check", cornerflag)
                 convertframe = "convert%d.png" % convertcnt
-                cv2.imwrite('./convert/'+convertframe, frame)
+                cv2.imwrite('./convert/'+convertframe, newframe)
                 convertcnt += 1
-                cv2.imwrite('frame.png', frame)
+                cv2.imwrite('frame.png', newframe)
                 self.qPixmapFileVar = QPixmap()
                 self.qPixmapFileVar.load("frame.png")
                 self.qPixmapFileVar = self.qPixmapFileVar.scaledToWidth(600)
                 self.video_label.setPixmap(self.qPixmapFileVar)
-                passflag = 0
 
-            # if passflag == 1:
         cv2.destroyAllWindows()
         cap.release()
-
+        """     
         for i in range (cnt):
             incode = "./convert/convert%d.png" % i
             incode_img = cv2.imread(incode)
             print(incode)
             out.write(incode_img)
-
+        """
         print("인코딩 완료")
+
 
 
 
@@ -675,3 +676,5 @@ if __name__ == "__main__":
     myWindow = MyWindow()
     myWindow.show()
     app.exec_()
+    
+
